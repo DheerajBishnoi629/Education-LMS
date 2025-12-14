@@ -6,11 +6,14 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.html\" \"src/**/*.scss\"",
     "test": "ng test",
-    "serve:ssr:EduForge_LMS": "node dist/EduForge_LMS/server/server.mjs"
+    "serve:ssr:EduForge_LMS": "node dist/EduForge_LMS/server/server.mjs",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
+    "@angular-eslint/eslint-plugin": "^21.1.0",
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
     "@angular/core": "^20.0.0",
@@ -30,12 +33,17 @@
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
+    "angular-eslint": "21.0.1",
+    "eslint": "^9.39.1",
+    "husky": "^9.1.7",
     "jasmine-core": "~5.7.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.2"
+    "lint-staged": "^16.2.7",
+    "typescript": "~5.8.2",
+    "typescript-eslint": "8.46.4"
   }
 }
