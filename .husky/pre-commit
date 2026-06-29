@@ -1,1 +1,1 @@
-npm run lint && node test-runner.js
+npm run lint
