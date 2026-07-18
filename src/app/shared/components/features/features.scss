@@ -1,0 +1,589 @@
+@use 'sass:color';
+
+// Top Navigation Bar
+.features-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  background: rgba(248, 249, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-subtle, #e2e8f0);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    padding: 0 var(--spacing-margin-desktop);
+    max-width: var(--spacing-container-max);
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .nav-links {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+  }
+
+  .nav-link {
+    font-size: 16px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    padding: 4px 0;
+
+    &:hover {
+      color: var(--primary);
+    }
+
+    &.active {
+      color: var(--primary);
+      font-weight: 700;
+      border-bottom: 2px solid var(--primary);
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .btn-login {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+
+      @media (min-width: 640px) {
+        display: block;
+      }
+
+      &:hover {
+        background-color: rgba(53, 37, 205, 0.05);
+      }
+    }
+
+    .btn-get-started {
+      background-color: var(--primary-container, #4f46e5);
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.3);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+}
+
+.features-main-container {
+  padding-top: 120px; // account for navbar height
+  padding-bottom: 64px;
+  background-color: var(--background);
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  overflow-x: hidden;
+}
+
+// Hero Section
+.features-hero {
+  max-width: var(--spacing-container-max);
+  margin: 0 auto 64px auto;
+  padding: 0 var(--spacing-margin-desktop);
+  text-align: center;
+
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    margin-bottom: 24px;
+    border-radius: 9999px;
+    background-color: rgba(53, 37, 205, 0.1);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .highlight {
+      color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      font-size: 32px;
+    }
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0 auto;
+    opacity: 0.85;
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
+}
+
+// Bento Grid Setup
+.features-grid-section {
+  max-width: var(--spacing-container-max);
+  margin: 0 auto 80px auto;
+  padding: 0 var(--spacing-margin-desktop);
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 24px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// Glass Card Base Style
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+// Feature Card Item Style
+.feature-card {
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-color: rgba(53, 37, 205, 0.2);
+
+    .feature-icon {
+      transform: translateY(-4px) scale(1.05);
+    }
+
+    .learn-more-link {
+      color: var(--primary);
+      gap: 12px;
+
+      .icon-arrow {
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    .material-symbols-outlined {
+      font-size: 28px;
+      font-variation-settings: 'FILL' 1;
+    }
+
+    // Icon Color Themes
+    &.icon-primary {
+      background-color: rgba(53, 37, 205, 0.08);
+      color: var(--primary);
+    }
+
+    &.icon-secondary {
+      background-color: rgba(0, 108, 73, 0.08);
+      color: var(--secondary);
+    }
+
+    &.icon-secondary-light {
+      background-color: rgba(78, 222, 163, 0.15);
+      color: var(--secondary);
+    }
+
+    &.icon-tertiary {
+      background-color: rgba(104, 64, 0, 0.08);
+      color: var(--color-tertiary);
+    }
+
+    &.icon-tertiary-light {
+      background-color: rgba(255, 221, 184, 0.2);
+      color: var(--color-tertiary);
+    }
+
+    &.icon-primary-light {
+      background-color: rgba(79, 70, 229, 0.12);
+      color: var(--primary);
+    }
+
+    &.icon-secondary-dark {
+      background-color: rgba(0, 82, 54, 0.08);
+      color: var(--secondary);
+    }
+
+    &.icon-error {
+      background-color: rgba(186, 26, 26, 0.08);
+      color: var(--color-error);
+    }
+  }
+
+  .feature-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .feature-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    opacity: 0.85;
+    margin-bottom: 24px;
+  }
+
+  .image-wrapper {
+    margin-top: auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    height: 160px;
+    background-color: #f1f5f9;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    margin-bottom: 24px;
+    transition: border-color 0.3s ease;
+
+    .feature-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    &:hover .feature-img {
+      transform: scale(1.05);
+    }
+  }
+
+  .learn-more-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+
+    .icon-arrow {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+  }
+}
+
+// Special Bento Card Span
+.span-two {
+  @media (min-width: 1024px) {
+    grid-column: span 2;
+  }
+}
+
+// Analytics Layout inside Bento Span Card
+.analytics-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .analytics-text {
+    flex: 1;
+  }
+
+  .analytics-image-wrapper {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    height: 192px;
+    background-color: #f1f5f9;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    align-self: stretch;
+
+    .feature-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    &:hover .feature-img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+// CTA Section Style
+.cta-section {
+  position: relative;
+  background-color: var(--primary);
+  color: white;
+  padding: 96px 32px;
+  text-align: center;
+  overflow: hidden;
+  margin-bottom: 64px;
+
+  .cta-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background: radial-gradient(circle at center, white 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-content {
+    position: relative;
+    z-index: 2;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .cta-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.25;
+
+    @media (max-width: 768px) {
+      font-size: 28px;
+    }
+  }
+
+  .cta-desc {
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 32px;
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+
+    @media (min-width: 640px) {
+      flex-direction: row;
+    }
+
+    .btn {
+      width: 100%;
+      max-width: 240px;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+
+      @media (min-width: 640px) {
+        width: auto;
+      }
+
+      &.btn-primary {
+        background-color: white;
+        color: var(--primary);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+          transform: translateY(-2px);
+          background-color: rgba(255, 255, 255, 0.95);
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      &.btn-outline {
+        background-color: transparent;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-color: white;
+        }
+      }
+    }
+  }
+}
+
+// Features Footer Styles
+.features-footer {
+  background-color: var(--surface-container-lowest, #ffffff);
+  border-top: 1px solid var(--color-border-subtle, #e2e8f0);
+  padding: 64px 32px;
+
+  .footer-grid {
+    max-width: var(--spacing-container-max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 2fr repeat(3, 1fr);
+    }
+  }
+
+  .footer-brand {
+    .brand-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .brand-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 280px;
+    }
+  }
+
+  .footer-column {
+    h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        margin-bottom: 12px;
+
+        a {
+          font-size: 14px;
+          color: var(--text-secondary);
+          text-decoration: none;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: var(--primary);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+          }
+
+          &.active {
+            color: var(--primary);
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
+
+// CSS Animation for Entrance
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feature-card {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  // Stagger delays for entrance animation
+  @for $i from 1 through 9 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.08}s;
+    }
+  }
+}
