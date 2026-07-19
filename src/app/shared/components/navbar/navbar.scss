@@ -1,52 +1,91 @@
-.container {
+.navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
   top: 0;
   height: 80px;
   width: 100%;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 6%;
   box-shadow:
-    rgba(14, 63, 126, 0.04) 0px 0px 0px 1px,
-    rgba(42, 51, 69, 0.04) 0px 1px 1px -0.5px,
-    rgba(42, 51, 70, 0.04) 0px 3px 3px -1.5px,
-    rgba(42, 51, 70, 0.04) 0px 6px 6px -3px,
-    rgba(14, 63, 126, 0.04) 0px 12px 12px -6px,
-    rgba(14, 63, 126, 0.04) 0px 24px 24px -12px;
+    rgba(14, 63, 126, 0.02) 0px 1px 3px 0px,
+    rgba(14, 63, 126, 0.02) 0px 10px 15px -3px;
+  transition: all var(--transition);
+
   .logo img {
-    flex: 0 0 15%;
-    width: 100px;
-    height: 70%;
-    margin-top: 10px;
+    height: 48px;
+    width: auto;
+    margin-top: 4px;
+    cursor: pointer;
+    transition: transform var(--transition);
+
+    &:hover {
+      transform: scale(1.02);
+    }
   }
+
   .links {
     flex: 0 0 55%;
     display: flex;
     justify-content: space-evenly;
+    
     a {
       text-decoration: none;
-      font-size: 20px;
-      color: var(--neutral);
-    }
-    a:hover {
-      color: rgb(48, 47, 47);
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+
+      &:hover {
+        color: var(--primary);
+      }
     }
   }
+
   .login {
     flex: 0 0 20%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
+
     a {
-      font-size: 20px;
-      color: var(--neutral);
-      margin-right: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-right: 24px;
       text-decoration: none;
+      transition: color var(--transition);
+
+      &:hover {
+        color: var(--primary);
+      }
     }
+
     button {
-      padding: 6px 25px;
+      padding: 10px 24px;
       background-color: var(--primary);
-      border-radius: 6px;
+      border: none;
+      border-radius: 8px;
       color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(53, 37, 205, 0.15);
+      transition: all var(--transition);
+
+      &:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px rgba(53, 37, 205, 0.2);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
     }
   }
 }
+
