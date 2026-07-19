@@ -1,0 +1,95 @@
+<main class="verify-main-container">
+  <!-- Left Side: Visual / Illustration -->
+  <section class="left-section">
+    <div routerLink="/" class="brand-anchor">
+      <span class="material-symbols-outlined brand-logo">school</span>
+      <span class="brand-name">EduForge</span>
+    </div>
+    <div class="illustration-area">
+      <!-- Shadow Glow -->
+      <div class="shadow-glow"></div>
+      <!-- Main Illustration Frame -->
+      <div class="img-wrapper animate-pulse-glow">
+        <img class="hero-illustration animate-float" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCznyg-YDxY1UoVUtdbTKscIpcpdKVlOEvNwYc2t3nDnd2UdJz7__m1zutI7CLtyVGaNWb5A6foR1qIpRZjxB9Nwf6i68CS5ENd0hb0wqcjouLWY_5OifeglSWFTKfVVXWgyOojb2XUFcq-365UpPH1Ffun2AMRXL_PrAb8tDLdcqbFYWvt_drQJDUTz6rXYoD2P5OBKH2OgzXw9GtSHuRL2b1_ej-HyEkmHkD5lPlmQn_jmwI6B5G_bvx8PRNQ_5CzgZmyQbC_kB2H" alt="EduForge Verification Illustration" />
+      </div>
+      <!-- Floating Elements -->
+      <div class="blur-glow green-glow"></div>
+      <div class="blur-glow blue-glow"></div>
+    </div>
+    <!-- Footer Branding -->
+    <div class="left-footer">
+      <p>© 2024 EduForge. Empowering learners worldwide.</p>
+    </div>
+  </section>
+
+  <!-- Right Side: OTP Verification Form -->
+  <section class="right-section">
+    <div class="form-wrapper">
+      <!-- Header Section -->
+      <div class="form-header">
+        <div routerLink="/" class="mobile-brand">
+          <span class="material-symbols-outlined brand-logo">school</span>
+          <span class="brand-name">EduForge</span>
+        </div>
+        <h1>Verify OTP</h1>
+        <p class="subtitle-text">We sent a 6-digit code to your email</p>
+        <div class="email-row">
+          <span class="user-email">user@eduforge.com</span>
+          <button routerLink="/signup" class="btn-edit-email">
+            <span class="material-symbols-outlined text-edit-icon">edit</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- OTP Input Form -->
+      <form class="otp-form" (submit)="$event.preventDefault()">
+        <div class="otp-inputs-grid">
+          <!-- Code Inputs -->
+          <input #otpInput (input)="onInput($event, 0)" (keydown)="onKeyDown($event, 0)" class="otp-input" maxlength="1" type="text" aria-label="Digit 1" />
+          <input #otpInput (input)="onInput($event, 1)" (keydown)="onKeyDown($event, 1)" class="otp-input" maxlength="1" type="text" aria-label="Digit 2" />
+          <input #otpInput (input)="onInput($event, 2)" (keydown)="onKeyDown($event, 2)" class="otp-input" maxlength="1" type="text" aria-label="Digit 3" />
+          <input #otpInput (input)="onInput($event, 3)" (keydown)="onKeyDown($event, 3)" class="otp-input" maxlength="1" type="text" aria-label="Digit 4" />
+          <input #otpInput (input)="onInput($event, 4)" (keydown)="onKeyDown($event, 4)" class="otp-input" maxlength="1" type="text" aria-label="Digit 5" />
+          <input #otpInput (input)="onInput($event, 5)" (keydown)="onKeyDown($event, 5)" class="otp-input" maxlength="1" type="text" aria-label="Digit 6" />
+        </div>
+        <div class="form-actions">
+          <button (click)="onVerify()" [disabled]="isVerifying" [class.verifying]="isVerifying" [class.success]="isSuccess" class="btn-auth-submit" id="verify-btn" type="submit">
+            <span class="btn-text-content">
+              @if (isVerifying) {
+                <svg class="spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              }
+              {{ verificationStatus }}
+            </span>
+          </button>
+          <div class="resend-row">
+            <p>
+              Didn't receive the code? 
+              <button class="btn-resend" type="button">Resend Code</button>
+            </p>
+          </div>
+        </div>
+      </form>
+
+      <!-- Security Assurance -->
+      <div class="security-assurance">
+        <div class="assurance-item">
+          <span class="material-symbols-outlined assurance-icon icon-fill">verified_user</span>
+          <span class="assurance-label">Secure 256-bit SSL encryption</span>
+        </div>
+        <div class="assurance-item">
+          <span class="material-symbols-outlined assurance-icon icon-fill">lock</span>
+          <span class="assurance-label">Your privacy is our priority</span>
+        </div>
+      </div>
+
+      <!-- Footer Navigation Links -->
+      <footer class="verify-footer">
+        <a class="footer-link" href="#">Help Center</a>
+        <a class="footer-link" href="#">Privacy Policy</a>
+      </footer>
+    </div>
+  </section>
+</main>
