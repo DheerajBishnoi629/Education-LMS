@@ -1,6 +1,63 @@
 :root {
-  --primary: #4f46e5;
-  --secondary: #7c3aed;
-  --tertiary: #a54100;
-  --neutral: #64748b;
+  /* Backgrounds */
+  --background: #f8f9ff;
+  --surface: #ffffff;
+  --surface-secondary: #f1f5f9;
+
+  /* Primary */
+  --primary: #3525cd;
+  --primary-hover: #2e20b8;
+  --primary-active: #281ca5;
+  --on-primary: #ffffff;
+
+  /* Secondary */
+  --secondary: #006c49;
+  --secondary-hover: #005c3f;
+  --on-secondary: #ffffff;
+
+  /* Status */
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+  --info: #2563eb;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  /* Border */
+  --border: #e2e8f0;
+
+  /* ===============================
+     Border Radius
+  =============================== */
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+
+  /* ===============================
+     Spacing
+  =============================== */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  /* ===============================
+     Shadow
+  =============================== */
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.08);
+
+  /* ===============================
+     Animation
+  =============================== */
+
+  --transition: 0.3s ease;
 }
