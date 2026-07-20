@@ -1,0 +1,116 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="material-symbols-outlined logo-icon">auto_stories</span>
+      <span class="brand-name">EduForge</span>
+    </div>
+    <nav class="nav-links">
+      <a class="nav-item active">
+        <span class="material-symbols-outlined">dashboard</span>
+        Dashboard
+      </a>
+      <a class="nav-item">
+        <span class="material-symbols-outlined">groups</span>
+        My Classes
+      </a>
+      <a class="nav-item">
+        <span class="material-symbols-outlined">assignment</span>
+        Assignments
+      </a>
+      <a class="nav-item">
+        <span class="material-symbols-outlined">analytics</span>
+        Performance
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <div class="user-welcome">
+        <h1>Teacher Portal</h1>
+        @if (dashboardData()) {
+          <p>{{ dashboardData()?.message }}</p>
+        }
+      </div>
+      <div class="profile-chip">
+        <div class="avatar">T</div>
+        <span class="role-badge">Teacher</span>
+      </div>
+    </header>
+
+    @if (errorMessage()) {
+      <div class="alert-danger">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon class-icon">
+          <span class="material-symbols-outlined">cast_for_education</span>
+        </div>
+        <div class="stat-info">
+          <h3>Active Classes</h3>
+          <p class="stat-value">
+            {{ dashboardData()?.data?.classes?.length || 0 }}
+          </p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon grading-icon">
+          <span class="material-symbols-outlined">rate_review</span>
+        </div>
+        <div class="stat-info">
+          <h3>Pending Grading</h3>
+          <p class="stat-value">
+            {{ dashboardData()?.data?.pendingGrading || 0 }}
+          </p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon students-icon">
+          <span class="material-symbols-outlined">group</span>
+        </div>
+        <div class="stat-info">
+          <h3>Total Students</h3>
+          <p class="stat-value">148</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="classes-section">
+      <div class="section-header">
+        <h2>My Classes</h2>
+      </div>
+      <div class="classes-list">
+        @if (dashboardData()?.data?.classes) {
+          @for (cls of dashboardData()?.data?.classes; track cls) {
+            <div class="class-card">
+              <div class="class-glow"></div>
+              <div class="class-content">
+                <span class="material-symbols-outlined cls-icon">menu_book</span>
+                <h3>{{ cls }}</h3>
+                <div class="class-meta">
+                  <span>Enrolled: 45 Students</span>
+                  <button class="btn-manage">Manage</button>
+                </div>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="empty-state">
+            <span class="material-symbols-outlined">groups</span>
+            <p>No active classes found.</p>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+</div>
