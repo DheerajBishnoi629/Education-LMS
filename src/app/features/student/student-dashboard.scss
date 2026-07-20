@@ -1,0 +1,317 @@
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background);
+  font-family: var(--font-body-md);
+}
+
+.sidebar {
+  width: 260px;
+  background-color: #0b1c30;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-4);
+  box-shadow: var(--shadow-md);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  padding: 0 var(--space-2);
+}
+
+.logo-icon {
+  font-size: 28px;
+  color: #6ffbbe;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  color: #94a3b8;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: var(--radius);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-footer {
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  padding: var(--space-3) var(--space-4);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-logout:hover {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: var(--space-6);
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.user-welcome h1 {
+  font-size: 28px;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.user-welcome p {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.profile-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background-color: var(--surface);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 50px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.role-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  background-color: #e0e7ff;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.alert-danger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-6);
+  border: 1px solid #fca5a5;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background-color: var(--surface);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(53, 37, 205, 0.08);
+  color: var(--primary);
+  border-radius: var(--radius);
+}
+
+.stat-icon span {
+  font-size: 24px;
+}
+
+.stat-info h3 {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.courses-section {
+  background-color: var(--surface);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.section-header h2 {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: var(--space-5);
+}
+
+.courses-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-5);
+}
+
+.course-card {
+  position: relative;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(53, 37, 205, 0.08);
+}
+
+.course-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), #6ffbbe);
+}
+
+.course-content {
+  padding: var(--space-5);
+}
+
+.course-icon {
+  font-size: 32px;
+  color: var(--primary);
+  margin-bottom: var(--space-3);
+}
+
+.course-content h3 {
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.progress-bar-container {
+  height: 6px;
+  background-color: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--primary);
+  border-radius: 3px;
+}
+
+.course-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.btn-resume {
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-resume:hover {
+  background-color: var(--primary-hover);
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+  color: var(--text-muted);
+}
+
+.empty-state span {
+  font-size: 48px;
+}

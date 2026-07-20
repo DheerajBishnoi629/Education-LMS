@@ -25,6 +25,7 @@
     "@primeng/themes": "^21.0.4",
     "@tailwindcss/postcss": "^4.3.2",
     "express": "^5.1.0",
+    "firebase": "^12.16.0",
     "postcss": "^8.5.16",
     "primeicons": "^7.0.0",
     "primeng": "^21.1.9",

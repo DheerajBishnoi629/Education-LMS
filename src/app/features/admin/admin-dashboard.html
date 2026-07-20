@@ -1,0 +1,143 @@
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="material-symbols-outlined logo-icon">auto_stories</span>
+      <span class="brand-name">EduForge</span>
+    </div>
+    <nav class="nav-links">
+      <a class="nav-item active">
+        <span class="material-symbols-outlined">dashboard</span>
+        Dashboard
+      </a>
+      <a class="nav-item">
+        <span class="material-symbols-outlined">shield_person</span>
+        Admin Controls
+      </a>
+      <a class="nav-item">
+        <span class="material-symbols-outlined">monitoring</span>
+        System Health
+      </a>
+      <a class="nav-item">
+        <span class="material-symbols-outlined">settings</span>
+        Global Settings
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <div class="user-welcome">
+        <h1>Admin Console</h1>
+        @if (dashboardData()) {
+          <p>{{ dashboardData()?.message }}</p>
+        }
+      </div>
+      <div class="profile-chip">
+        <div class="avatar">A</div>
+        <span class="role-badge">Admin</span>
+      </div>
+    </header>
+
+    @if (errorMessage()) {
+      <div class="alert-danger">
+        <span class="material-symbols-outlined">error</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon status-icon">
+          <span class="material-symbols-outlined">dns</span>
+        </div>
+        <div class="stat-info">
+          <h3>System Status</h3>
+          <p class="stat-value text-success">
+            {{ dashboardData()?.data?.systemStatus || 'Loading...' }}
+          </p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon users-icon">
+          <span class="material-symbols-outlined">group</span>
+        </div>
+        <div class="stat-info">
+          <h3>Total Users</h3>
+          <p class="stat-value">
+            {{ dashboardData()?.data?.totalUsers || 0 }}
+          </p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon secure-icon">
+          <span class="material-symbols-outlined">lock</span>
+        </div>
+        <div class="stat-info">
+          <h3>Secured Actions</h3>
+          <p class="stat-value">Active</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="admin-controls-section">
+      <div class="section-header">
+        <h2>Promote Student to Teacher</h2>
+        <p class="subtitle">Enter the student's User ID or Firebase UID to elevate their permissions.</p>
+      </div>
+
+      <div class="form-card">
+        <form (submit)="$event.preventDefault(); promoteToTeacher()">
+          <div class="form-group">
+            <label for="studentId">Student Identifier (Firebase UID or User ID)</label>
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined input-icon">fingerprint</span>
+              <input
+                type="text"
+                id="studentId"
+                placeholder="e.g. firebase-uid-123 or user-id"
+                class="admin-input"
+                [ngModel]="targetIdentifier()"
+                (ngModelChange)="targetIdentifier.set($event)"
+                name="targetIdentifier"
+                required
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="btn-promote"
+            [disabled]="isSubmitting() || !targetIdentifier().trim()"
+          >
+            @if (isSubmitting()) {
+              <span>Processing...</span>
+            } @else {
+              <span class="material-symbols-outlined">manage_accounts</span>
+              <span>Promote to Teacher</span>
+            }
+          </button>
+        </form>
+
+        @if (promotionSuccessMessage()) {
+          <div class="alert-success">
+            <span class="material-symbols-outlined">check_circle</span>
+            <span>{{ promotionSuccessMessage() }}</span>
+          </div>
+        }
+
+        @if (promotionErrorMessage()) {
+          <div class="alert-danger-inline">
+            <span class="material-symbols-outlined">error</span>
+            <span>{{ promotionErrorMessage() }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+</div>
