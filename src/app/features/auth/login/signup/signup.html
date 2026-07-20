@@ -40,7 +40,7 @@
 
       <!-- Social Registration -->
       <div class="social-grid">
-        <button class="btn-social">
+        <button class="btn-social" type="button" (click)="loginWithGoogle()">
           <svg class="social-svg" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
@@ -49,7 +49,7 @@
           </svg>
           Google
         </button>
-        <button class="btn-social">
+        <button class="btn-social" type="button">
           <svg class="social-svg" fill="#0077b5" viewBox="0 0 24 24">
             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path>
           </svg>
@@ -64,14 +64,35 @@
         <div class="line"></div>
       </div>
 
+      <!-- Messages / Alerts -->
+      @if (errorMessage) {
+        <div class="p-3 mb-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-lg">error</span>
+          <span>{{ errorMessage }}</span>
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="p-4 mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex flex-col gap-2">
+          <div class="flex items-center gap-2 font-medium text-emerald-400 text-base">
+            <span class="material-symbols-outlined text-xl">mark_email_read</span>
+            <span>Check Your Inbox</span>
+          </div>
+          <p>{{ successMessage }}</p>
+          <a routerLink="/login" class="inline-flex items-center gap-1 font-semibold text-emerald-400 hover:underline mt-1">
+            Proceed to Login &rarr;
+          </a>
+        </div>
+      }
+
       <!-- Form -->
-      <form class="signup-form" (submit)="$event.preventDefault()">
+      <form class="signup-form" (ngSubmit)="onSignUp()">
         <!-- Full Name -->
         <div class="form-field">
           <label for="full_name">Full Name</label>
           <div class="input-wrapper">
             <span class="material-symbols-outlined input-icon">person</span>
-            <input type="text" id="full_name" placeholder="John Doe" class="auth-input" />
+            <input type="text" id="full_name" name="fullName" [(ngModel)]="fullName" placeholder="John Doe" class="auth-input" required />
           </div>
         </div>
 
@@ -80,7 +101,7 @@
           <label for="email">Email Address</label>
           <div class="input-wrapper">
             <span class="material-symbols-outlined input-icon">mail</span>
-            <input type="email" id="email" placeholder="name@example.com" class="auth-input" />
+            <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="name@example.com" class="auth-input" required />
           </div>
         </div>
 
@@ -89,7 +110,7 @@
           <label for="password">Password</label>
           <div class="input-wrapper">
             <span class="material-symbols-outlined input-icon">lock</span>
-            <input [type]="isPasswordVisible ? 'text' : 'password'" id="password" #pwInput (input)="updatePasswordStrength(pwInput.value)" placeholder="••••••••" class="auth-input" />
+            <input [type]="isPasswordVisible ? 'text' : 'password'" id="password" name="password" [(ngModel)]="password" #pwInput (input)="updatePasswordStrength(pwInput.value)" placeholder="••••••••" class="auth-input" required />
             <button type="button" class="visibility-toggle" (click)="togglePasswordVisibility()">
               <span class="material-symbols-outlined">{{ isPasswordVisible ? 'visibility_off' : 'visibility' }}</span>
             </button>
@@ -106,9 +127,12 @@
           </div>
         </div>
 
-        <!-- CTA Button (Navigates to verify for mockup) -->
-        <button routerLink="/verify" type="submit" class="btn-auth-submit">Create Account</button>
+        <!-- CTA Button -->
+        <button type="submit" [disabled]="isLoading" class="btn-auth-submit">
+          {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+        </button>
       </form>
+
 
       <!-- Footer Link -->
       <footer class="login-footer-link">

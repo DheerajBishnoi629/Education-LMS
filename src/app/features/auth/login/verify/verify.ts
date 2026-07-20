@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChildren, QueryList, inject } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-verify',
@@ -8,13 +9,15 @@ import { RouterLink, Router } from '@angular/router';
   styleUrl: './verify.scss',
 })
 export class Verify {
+  private authService = inject(AuthService);
   @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
   router = inject(Router);
+
   verificationStatus = 'Verify';
   isVerifying = false;
   isSuccess = false;
-
-  
+  resendNotice = '';
+  isResending = false;
 
   onInput(event: Event, index: number): void {
     const inputEl = event.target as HTMLInputElement;
@@ -49,17 +52,29 @@ export class Verify {
       this.isVerifying = true;
       this.verificationStatus = 'Verifying...';
 
-      // Simulate a small delay for verification success animation
       setTimeout(() => {
         this.isVerifying = false;
         this.isSuccess = true;
         this.verificationStatus = 'Success!';
 
-        // Redirect to homepage after 1 second
         setTimeout(() => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/login']);
         }, 1000);
       }, 1500);
     }
   }
+
+  async resendEmail(): Promise<void> {
+    this.isResending = true;
+    this.resendNotice = '';
+    try {
+      await this.authService.resendVerificationEmail();
+      this.resendNotice = 'A new verification link has been sent to your Gmail address!';
+    } catch {
+      this.resendNotice = 'Unable to resend email. Please check your account or try logging in.';
+    } finally {
+      this.isResending = false;
+    }
+  }
 }
+
