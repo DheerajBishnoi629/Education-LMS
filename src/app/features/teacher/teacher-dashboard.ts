@@ -1,44 +1,39 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { TeacherService } from '../../core/services/teacher.service';
 import { AuthService } from '../../core/auth/auth.service';
-
-interface TeacherDashboardData {
-  success: boolean;
-  message: string;
-  data: {
-    role: string;
-    classes: string[];
-    pendingGrading: number;
-  };
-}
+import { TeacherDashboardStats, TeacherCourse } from '../../core/models/teacher.model';
 
 @Component({
   selector: 'app-teacher-dashboard',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './teacher-dashboard.html',
   styleUrl: './teacher-dashboard.scss',
 })
 export class TeacherDashboard implements OnInit {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  private teacherService = inject(TeacherService);
+  authService = inject(AuthService);
 
-  dashboardData = signal<TeacherDashboardData | null>(null);
-  errorMessage = signal<string | null>(null);
+  stats = signal<TeacherDashboardStats | null>(null);
+  recentCourses = signal<TeacherCourse[]>([]);
+  isLoading = signal(true);
 
   ngOnInit(): void {
-    this.http.get<TeacherDashboardData>('http://localhost:3000/api/teacher/dashboard').subscribe({
-      next: (res) => {
-        this.dashboardData.set(res);
-      },
-      error: (err) => {
-        this.errorMessage.set('Failed to load teacher dashboard.');
-        throw err;
-      },
-    });
+    this.loadDashboardData();
   }
 
-  async logout(): Promise<void> {
-    await this.authService.logout();
+  async loadDashboardData(): Promise<void> {
+    try {
+      this.isLoading.set(true);
+      const res = await this.teacherService.getDashboardData();
+      this.stats.set(res.stats);
+      this.recentCourses.set(res.recentCourses);
+      this.isLoading.set(false);
+    } catch (err) {
+      console.error('Failed to load teacher dashboard:', err);
+      this.isLoading.set(false);
+    }
   }
 }

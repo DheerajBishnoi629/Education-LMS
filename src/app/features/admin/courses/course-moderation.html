@@ -1,0 +1,48 @@
+<div class="course-moderation-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Course Moderation</h2>
+      <p class="page-subtitle">Review, approve, or reject incoming course submissions from instructors.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && courses().length" class="table-card">
+    <table class="moderation-table">
+      <thead>
+        <tr>
+          <th>Course Title</th>
+          <th>Instructor</th>
+          <th>Category</th>
+          <th>Submitted Date</th>
+          <th class="text-right">Modules</th>
+          <th class="text-center">Status</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of courses()">
+          <td class="course-cell">
+            <span class="title">{{ course.title }}</span>
+          </td>
+          <td>{{ course.instructor_name }}</td>
+          <td>{{ course.category }}</td>
+          <td>{{ course.submitted_at | date:'mediumDate' }}</td>
+          <td class="text-right font-mono">{{ course.modules_count }}</td>
+          <td class="text-center">
+            <span class="status-badge" [class.approved]="course.status === 'Approved'" [class.rejected]="course.status === 'Rejected'" [class.pending]="course.status !== 'Approved' && course.status !== 'Rejected'">
+              {{ course.status }}
+            </span>
+          </td>
+          <td class="text-center actions-cell">
+            <button (click)="approveCourse(course.id)" [disabled]="course.status === 'Approved'" class="approve-btn">Approve</button>
+            <button (click)="rejectCourse(course.id)" [disabled]="course.status === 'Rejected'" class="reject-btn">Reject</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="quizzes-container">
+  <div class="page-header">
+    <h1 class="page-title">Quizzes & Knowledge Checks</h1>
+    <p class="page-subtitle">Test your skills and track quiz scores across your subjects.</p>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && quizzes().length" class="quizzes-grid">
+    <div *ngFor="let item of quizzes()" class="quiz-card">
+      <div class="card-top">
+        <div>
+          <span class="course-badge">
+            {{ item.course_title }}
+          </span>
+          <h3 class="quiz-title">{{ item.title }}</h3>
+          <p class="quiz-info">{{ item.total_questions }} Questions • Multiple Choice</p>
+        </div>
+        <div class="icon-avatar">
+          <span class="material-symbols-outlined">quiz</span>
+        </div>
+      </div>
+
+      <div class="card-bottom">
+        <span *ngIf="item.score_percentage" class="score-badge passed">
+          Passed ({{ item.score_percentage }}%)
+        </span>
+        <span *ngIf="!item.score_percentage" class="score-badge unattempted">
+          Not Attempted
+        </span>
+
+        <button class="start-btn">
+          Start Quiz
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

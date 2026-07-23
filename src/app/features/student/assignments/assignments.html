@@ -1,0 +1,38 @@
+<div class="assignments-container">
+  <div class="page-header">
+    <h1 class="page-title">Assignments</h1>
+    <p class="page-subtitle">Review upcoming deadlines and submit your coursework.</p>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && assignments().length" class="assignments-list">
+    <div *ngFor="let item of assignments()" class="assignment-card">
+      <div class="card-left">
+        <div class="icon-avatar">
+          <span class="material-symbols-outlined">assignment</span>
+        </div>
+        <div class="card-details">
+          <span class="course-badge">
+            {{ item.course_title }}
+          </span>
+          <h3 class="assignment-title">{{ item.title }}</h3>
+          <p class="assignment-desc">{{ item.description }}</p>
+        </div>
+      </div>
+
+      <div class="card-right">
+        <div class="due-info">
+          <p class="due-label">Due Date</p>
+          <p class="due-date">{{ item.due_date | date:'mediumDate' }}</p>
+        </div>
+
+        <button class="submit-btn">
+          Submit Work
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

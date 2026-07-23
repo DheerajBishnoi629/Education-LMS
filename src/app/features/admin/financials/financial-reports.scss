@@ -1,0 +1,161 @@
+$primary: #3525cd;
+$bg-card: #ffffff;
+$text-main: #191c1e;
+$text-muted: #464555;
+$border-color: #c7c4d8;
+
+.financial-reports-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-header {
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $text-main;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+.loading-box {
+  display: flex;
+  justify-content: center;
+  padding: 5rem 0;
+
+  .spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid $border-color;
+    border-bottom-color: $primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.financials-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .stat-card {
+    background-color: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: 0.25rem;
+    padding: 1.25rem;
+
+    .stat-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: $text-muted;
+      text-transform: uppercase;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: $text-main;
+      margin: 0;
+    }
+  }
+}
+
+.table-card {
+  background-color: $bg-card;
+  border-radius: 0.25rem;
+  border: 1px solid $border-color;
+  overflow: hidden;
+
+  .card-header {
+    padding: 1rem;
+    border-bottom: 1px solid $border-color;
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: $text-main;
+      margin: 0;
+    }
+  }
+
+  .financials-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+
+    thead {
+      background-color: #f2f4f6;
+
+      th {
+        padding: 0.75rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: $text-muted;
+        text-transform: uppercase;
+
+        &.text-right { text-align: right; }
+        &.text-center { text-align: center; }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid $border-color;
+
+        &:hover { background-color: #f8f9fb; }
+
+        td {
+          padding: 0.875rem 1rem;
+          font-size: 0.875rem;
+
+          &.text-right { text-align: right; }
+          &.text-center { text-align: center; }
+
+          &.font-mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+
+            &.font-bold { font-weight: 700; }
+          }
+
+          &.font-medium { font-weight: 500; }
+        }
+
+        .status-badge {
+          display: inline-block;
+          padding: 0.125rem 0.5rem;
+          background-color: #d1fae5;
+          color: #065f46;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

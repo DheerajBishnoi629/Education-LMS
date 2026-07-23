@@ -1,116 +1,86 @@
-<div class="dashboard-container">
-  <aside class="sidebar">
-    <div class="brand">
-      <span class="material-symbols-outlined logo-icon">auto_stories</span>
-      <span class="brand-name">EduForge</span>
+<div class="teacher-dashboard-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Welcome back, {{ authService.currentUser()?.name || 'Teacher' }}!</h2>
+      <p class="page-subtitle">Here is an overview of your course metrics and active students.</p>
     </div>
-    <nav class="nav-links">
-      <a class="nav-item active">
-        <span class="material-symbols-outlined">dashboard</span>
-        Dashboard
-      </a>
-      <a class="nav-item">
-        <span class="material-symbols-outlined">groups</span>
-        My Classes
-      </a>
-      <a class="nav-item">
-        <span class="material-symbols-outlined">assignment</span>
-        Assignments
-      </a>
-      <a class="nav-item">
-        <span class="material-symbols-outlined">analytics</span>
-        Performance
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="btn-logout" (click)="logout()">
-        <span class="material-symbols-outlined">logout</span>
-        Sign Out
-      </button>
-    </div>
-  </aside>
+    <a routerLink="/teacher/course/create" class="create-btn">
+      <span class="material-symbols-outlined icon">add</span>
+      <span>Create New Course</span>
+    </a>
+  </div>
 
-  <main class="main-content">
-    <header class="header">
-      <div class="user-welcome">
-        <h1>Teacher Portal</h1>
-        @if (dashboardData()) {
-          <p>{{ dashboardData()?.message }}</p>
-        }
-      </div>
-      <div class="profile-chip">
-        <div class="avatar">T</div>
-        <span class="role-badge">Teacher</span>
-      </div>
-    </header>
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
 
-    @if (errorMessage()) {
-      <div class="alert-danger">
-        <span class="material-symbols-outlined">error</span>
-        <span>{{ errorMessage() }}</span>
+  <div *ngIf="!isLoading()" class="dashboard-content">
+    <!-- Stat Cards Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="card-icon indigo">
+          <span class="material-symbols-outlined">school</span>
+        </div>
+        <div>
+          <p class="stat-label">Total Courses</p>
+          <h3 class="stat-val">{{ stats()?.totalCourses }}</h3>
+        </div>
       </div>
-    }
 
-    <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-icon class-icon">
-          <span class="material-symbols-outlined">cast_for_education</span>
-        </div>
-        <div class="stat-info">
-          <h3>Active Classes</h3>
-          <p class="stat-value">
-            {{ dashboardData()?.data?.classes?.length || 0 }}
-          </p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon grading-icon">
-          <span class="material-symbols-outlined">rate_review</span>
-        </div>
-        <div class="stat-info">
-          <h3>Pending Grading</h3>
-          <p class="stat-value">
-            {{ dashboardData()?.data?.pendingGrading || 0 }}
-          </p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon students-icon">
+        <div class="card-icon emerald">
           <span class="material-symbols-outlined">group</span>
         </div>
-        <div class="stat-info">
-          <h3>Total Students</h3>
-          <p class="stat-value">148</p>
+        <div>
+          <p class="stat-label">Active Students</p>
+          <h3 class="stat-val">{{ stats()?.totalStudents | number }}</h3>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="card-icon amber">
+          <span class="material-symbols-outlined">account_balance_wallet</span>
+        </div>
+        <div>
+          <p class="stat-label">Total Earnings</p>
+          <h3 class="stat-val">${{ stats()?.totalRevenue | number:'1.2-2' }}</h3>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="card-icon purple">
+          <span class="material-symbols-outlined">star</span>
+        </div>
+        <div>
+          <p class="stat-label">Average Rating</p>
+          <h3 class="stat-val">{{ stats()?.averageRating }}</h3>
         </div>
       </div>
     </div>
 
-    <section class="classes-section">
+    <!-- Recent Courses Section -->
+    <div class="section-box">
       <div class="section-header">
-        <h2>My Classes</h2>
+        <h3 class="section-title">Recent Courses</h3>
+        <a routerLink="/teacher/courses" class="view-all-link">View All Courses</a>
       </div>
-      <div class="classes-list">
-        @if (dashboardData()?.data?.classes) {
-          @for (cls of dashboardData()?.data?.classes; track cls) {
-            <div class="class-card">
-              <div class="class-glow"></div>
-              <div class="class-content">
-                <span class="material-symbols-outlined cls-icon">menu_book</span>
-                <h3>{{ cls }}</h3>
-                <div class="class-meta">
-                  <span>Enrolled: 45 Students</span>
-                  <button class="btn-manage">Manage</button>
-                </div>
-              </div>
-            </div>
-          }
-        } @else {
-          <div class="empty-state">
-            <span class="material-symbols-outlined">groups</span>
-            <p>No active classes found.</p>
+
+      <div class="courses-grid">
+        <div *ngFor="let course of recentCourses()" class="course-card">
+          <div class="card-image">
+            <img [src]="course.thumbnail_url" [alt]="course.title" />
           </div>
-        }
+          <div class="card-body">
+            <h4 class="title">{{ course.title }}</h4>
+            <div class="footer-meta">
+              <span class="category">{{ course.category_name }}</span>
+              <a routerLink="/teacher/courses" class="edit-link">Manage</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </div>
 </div>

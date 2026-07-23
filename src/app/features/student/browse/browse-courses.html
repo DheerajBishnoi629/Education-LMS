@@ -1,0 +1,90 @@
+<div class="browse-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">Course Marketplace</h1>
+    <p class="page-subtitle">Explore 2,400+ high-quality courses to advance your career.</p>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div class="filter-toolbar">
+    <!-- Search Bar -->
+    <div class="search-field">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" placeholder="Search for courses, skills, or instructors..." class="search-input" />
+    </div>
+
+    <!-- Filter Pills & Selectors -->
+    <div class="filter-row">
+      <!-- Category Pills -->
+      <div class="category-pills">
+        <button *ngFor="let cat of categories" (click)="onCategorySelect(cat)" [class.active]="selectedCategory() === cat" class="pill-btn">
+          {{ cat }}
+        </button>
+      </div>
+
+      <!-- Select Dropdowns -->
+      <div class="select-group">
+        <select [(ngModel)]="selectedLevel" (change)="onFilterChange()" class="filter-select">
+          <option *ngFor="let lvl of levels" [value]="lvl">{{ lvl }}</option>
+        </select>
+
+        <select [(ngModel)]="selectedSort" (change)="onFilterChange()" class="filter-select">
+          <option *ngFor="let s of sorts" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Course Cards Grid -->
+  <div *ngIf="!isLoading() && courses().length" class="courses-grid">
+    <div *ngFor="let course of courses()" class="browse-card">
+      <div class="card-image">
+        <img [src]="course.thumbnail_url" [alt]="course.title" />
+        <div class="category-badge">
+          {{ course.category_name }}
+        </div>
+        <div class="price-badge">
+          ${{ course.price }}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="rating-row">
+          <span class="material-symbols-outlined star-icon">star</span>
+          <span class="rating-num">{{ course.rating }}</span>
+          <span class="level-label">({{ course.level }})</span>
+        </div>
+
+        <h3 class="course-name">
+          {{ course.title }}
+        </h3>
+        <p class="course-desc">
+          {{ course.subtitle }}
+        </p>
+
+        <div class="card-bottom">
+          <div class="hours-text">
+            <span class="material-symbols-outlined icon">schedule</span>
+            {{ course.total_hours }}
+          </div>
+
+          <a [routerLink]="['/student/course', course.id]" class="view-btn">
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading() && !courses().length" class="empty-state">
+    <span class="material-symbols-outlined empty-icon">search_off</span>
+    <h3 class="empty-title">No courses found</h3>
+    <p class="empty-text">Try adjusting your filters or search keywords.</p>
+  </div>
+</div>

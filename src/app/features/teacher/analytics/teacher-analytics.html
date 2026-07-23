@@ -1,0 +1,179 @@
+<div class="teacher-analytics-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Analytics & Earnings</h2>
+      <p class="page-subtitle">Track your course performance and revenue over time.</p>
+    </div>
+    <div class="header-actions">
+      <select class="time-select">
+        <option>Last 30 Days</option>
+        <option>Last 3 Months</option>
+        <option>This Year</option>
+        <option>All Time</option>
+      </select>
+      <button class="export-btn">
+        <span class="material-symbols-outlined icon">download</span>
+        <span>Export CSV</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && analytics()" class="analytics-content">
+    <!-- Bento Grid Layout -->
+    <div class="bento-grid">
+
+      <!-- Financial Cards Group -->
+      <div class="cards-column">
+        <!-- Total Revenue -->
+        <div class="financial-card">
+          <div class="card-header">
+            <span class="card-label">Total Revenue</span>
+            <div class="icon-avatar">
+              <span class="material-symbols-outlined">account_balance_wallet</span>
+            </div>
+          </div>
+          <div>
+            <div class="stat-value">${{ analytics()?.financialSummary?.totalRevenue | number:'1.2-2' }}</div>
+            <div class="stat-trend positive">
+              <span class="material-symbols-outlined icon">trending_up</span>
+              <span>+{{ analytics()?.financialSummary?.revenueGrowthPercent }}% vs last period</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Last 30 Days -->
+        <div class="financial-card">
+          <div class="card-header">
+            <span class="card-label">Last 30 Days</span>
+            <div class="icon-avatar">
+              <span class="material-symbols-outlined">calendar_month</span>
+            </div>
+          </div>
+          <div>
+            <div class="stat-value">${{ analytics()?.financialSummary?.last30DaysRevenue | number:'1.2-2' }}</div>
+            <div class="stat-trend positive">
+              <span class="material-symbols-outlined icon">trending_up</span>
+              <span>+{{ analytics()?.financialSummary?.last30DaysGrowthPercent }}% vs last period</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Payout -->
+        <div class="financial-card payout-card">
+          <div class="card-header">
+            <span class="card-label">Next Payout</span>
+            <div class="icon-avatar secondary-avatar">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+          </div>
+          <div>
+            <div class="stat-value">${{ analytics()?.financialSummary?.nextPayout | number:'1.2-2' }}</div>
+            <div class="payout-meta">
+              <span class="payout-date">Scheduled for {{ analytics()?.financialSummary?.payoutDate }}</span>
+              <span class="status-pill">{{ analytics()?.financialSummary?.payoutStatus }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Regions Demographic Widget -->
+      <div class="regions-widget">
+        <div class="widget-header">
+          <h3 class="widget-title">Top Regions</h3>
+          <button class="more-btn"><span class="material-symbols-outlined">more_vert</span></button>
+        </div>
+
+        <div class="map-placeholder">
+          <div class="map-overlay-text">
+            <span class="material-symbols-outlined icon">public</span>
+            <span>Global Student Distribution</span>
+          </div>
+        </div>
+
+        <div class="regions-list">
+          <div *ngFor="let reg of analytics()?.topRegions" class="region-row">
+            <div class="country-info">
+              <span class="color-dot" [style.background-color]="reg.color"></span>
+              <span class="country-name">{{ reg.country }}</span>
+            </div>
+            <span class="region-percent">{{ reg.percentage }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title">Daily Sales Overview</h3>
+            <p class="chart-subtitle">Revenue over the last 30 days</p>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-dot"></span>
+            <span>Revenue</span>
+          </div>
+        </div>
+
+        <div class="chart-canvas-box">
+          <canvas #salesChartCanvas></canvas>
+        </div>
+      </div>
+
+      <!-- Course Performance Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3 class="table-title">Course Performance</h3>
+          <div class="table-search">
+            <span class="material-symbols-outlined search-icon">search</span>
+            <input type="text" placeholder="Filter courses..." class="search-input" />
+          </div>
+        </div>
+
+        <div class="table-scroll-container">
+          <table class="performance-table">
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th class="text-right">Enrollments</th>
+                <th class="text-right">Revenue</th>
+                <th class="text-right">Conversion</th>
+                <th class="text-right">Refund Rate</th>
+                <th class="text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let course of analytics()?.coursePerformance">
+                <td class="course-cell">
+                  <div class="cell-flex">
+                    <div class="course-icon-avatar">
+                      <span class="material-symbols-outlined">{{ course.icon }}</span>
+                    </div>
+                    <span class="course-name">{{ course.name }}</span>
+                  </div>
+                </td>
+                <td class="text-right font-mono">{{ course.enrollments | number }}</td>
+                <td class="text-right font-mono font-bold">${{ course.revenue | number }}</td>
+                <td class="text-right font-mono text-emerald">
+                  <span class="cell-trend">
+                    {{ course.conversionRate }} <span class="material-symbols-outlined icon">arrow_upward</span>
+                  </span>
+                </td>
+                <td class="text-right font-mono text-muted">{{ course.refundRate }}</td>
+                <td class="text-center">
+                  <span class="active-badge">{{ course.status }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

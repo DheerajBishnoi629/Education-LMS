@@ -1,0 +1,51 @@
+<div class="support-tickets-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Support Tickets</h2>
+      <p class="page-subtitle">Manage open user inquiries, technical support, and platform requests.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && tickets().length" class="table-card">
+    <table class="tickets-table">
+      <thead>
+        <tr>
+          <th>Ticket ID</th>
+          <th>Subject / Issue</th>
+          <th>Reported By</th>
+          <th>Priority</th>
+          <th>Created</th>
+          <th class="text-center">Status</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of tickets()">
+          <td class="font-mono">{{ ticket.id }}</td>
+          <td class="title-cell font-medium">{{ ticket.title }}</td>
+          <td>{{ ticket.reportedBy }}</td>
+          <td>
+            <span class="priority-pill" [class.high]="ticket.priority.includes('High')" [class.medium]="ticket.priority.includes('Medium')" [class.low]="ticket.priority.includes('Low')">
+              {{ ticket.priority }}
+            </span>
+          </td>
+          <td>{{ ticket.created }}</td>
+          <td class="text-center">
+            <span class="status-pill" [class.resolved]="ticket.status === 'Resolved'" [class.progress]="ticket.status === 'In Progress'" [class.open]="ticket.status === 'Open'">
+              {{ ticket.status }}
+            </span>
+          </td>
+          <td class="text-center">
+            <button (click)="resolveTicket(ticket.id)" [disabled]="ticket.status === 'Resolved'" class="resolve-btn">
+              {{ ticket.status === 'Resolved' ? 'Resolved' : 'Mark Resolved' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<div class="course-create-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Create New Course</h2>
+      <p class="page-subtitle">Publish a new instructional course for your students.</p>
+    </div>
+    <a routerLink="/teacher/courses" class="back-link">
+      <span class="material-symbols-outlined icon">arrow_back</span> Back to Courses
+    </a>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="create-form-card">
+    <div class="form-grid">
+      <!-- Course Title -->
+      <div class="form-group col-span-2">
+        <label class="form-label">Course Title *</label>
+        <input type="text" [(ngModel)]="title" name="title" required placeholder="e.g. Advanced Reactive Architecture with RxJS" class="form-input" />
+      </div>
+
+      <!-- Subtitle -->
+      <div class="form-group col-span-2">
+        <label class="form-label">Subtitle / Short Summary</label>
+        <input type="text" [(ngModel)]="subtitle" name="subtitle" placeholder="e.g. Master reactive state management & async flows" class="form-input" />
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select [(ngModel)]="category" name="category" class="form-select">
+          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+      </div>
+
+      <!-- Level -->
+      <div class="form-group">
+        <label class="form-label">Difficulty Level</label>
+        <select [(ngModel)]="level" name="level" class="form-select">
+          <option *ngFor="let lvl of levels" [value]="lvl">{{ lvl }}</option>
+        </select>
+      </div>
+
+      <!-- Price -->
+      <div class="form-group">
+        <label class="form-label">Price ($)</label>
+        <input type="number" step="0.01" [(ngModel)]="price" name="price" class="form-input" />
+      </div>
+
+      <!-- Thumbnail URL -->
+      <div class="form-group">
+        <label class="form-label">Thumbnail Image URL</label>
+        <input type="url" [(ngModel)]="thumbnailUrl" name="thumbnailUrl" class="form-input" />
+      </div>
+
+      <!-- Description -->
+      <div class="form-group col-span-2">
+        <label class="form-label">Detailed Course Description</label>
+        <textarea rows="4" [(ngModel)]="description" name="description" placeholder="Describe the course learning outcomes, prerequisites, and curriculum summary..." class="form-textarea"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a routerLink="/teacher/courses" class="cancel-btn">Cancel</a>
+      <button type="submit" [disabled]="isSaving()" class="submit-btn">
+        <span *ngIf="!isSaving()">Create & Publish Course</span>
+        <span *ngIf="isSaving()">Publishing...</span>
+      </button>
+    </div>
+  </form>
+</div>
