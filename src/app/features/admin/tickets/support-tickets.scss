@@ -1,0 +1,134 @@
+$primary: #3525cd;
+$bg-card: #ffffff;
+$text-main: #191c1e;
+$text-muted: #464555;
+$border-color: #c7c4d8;
+$danger: #ba1a1a;
+$success: #065f46;
+
+.support-tickets-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.page-header {
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $text-main;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+.loading-box {
+  display: flex;
+  justify-content: center;
+  padding: 5rem 0;
+
+  .spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid $border-color;
+    border-bottom-color: $primary;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.table-card {
+  background-color: $bg-card;
+  border-radius: 0.25rem;
+  border: 1px solid $border-color;
+  overflow: hidden;
+
+  .tickets-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+
+    thead {
+      background-color: #f2f4f6;
+
+      th {
+        padding: 0.75rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: $text-muted;
+        text-transform: uppercase;
+
+        &.text-center { text-align: center; }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid $border-color;
+
+        &:hover { background-color: #f8f9fb; }
+
+        td {
+          padding: 0.875rem 1rem;
+          font-size: 0.875rem;
+
+          &.text-center { text-align: center; }
+
+          &.font-mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+          }
+
+          &.font-medium { font-weight: 500; color: $text-main; }
+        }
+
+        .priority-pill {
+          display: inline-block;
+          padding: 0.125rem 0.5rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+
+          &.high { background-color: #ffdad6; color: $danger; }
+          &.medium { background-color: #fef3c7; color: #b45309; }
+          &.low { background-color: #f2f4f6; color: $text-muted; }
+        }
+
+        .status-pill {
+          display: inline-block;
+          padding: 0.125rem 0.5rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+
+          &.resolved { background-color: #d1fae5; color: $success; }
+          &.progress { background-color: #dbeafe; color: #1e40af; }
+          &.open { background-color: #ffdad6; color: $danger; }
+        }
+
+        .resolve-btn {
+          padding: 0.375rem 0.75rem;
+          background-color: #f2f4f6;
+          color: $text-main;
+          border: 1px solid $border-color;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          cursor: pointer;
+
+          &:hover { background-color: $primary; color: #ffffff; }
+          &:disabled { opacity: 0.5; cursor: not-allowed; }
+        }
+      }
+    }
+  }
+}

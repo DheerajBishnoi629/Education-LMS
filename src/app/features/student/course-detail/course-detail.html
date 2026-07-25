@@ -1,0 +1,97 @@
+<div class="course-detail-container">
+  <a routerLink="/student/browse" class="back-link">
+    <span class="material-symbols-outlined icon">arrow_back</span> Back to Marketplace
+  </a>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && course()" class="detail-content">
+    <!-- Course Hero Card -->
+    <div class="detail-hero-card">
+      <div class="hero-info-col">
+        <div>
+          <div class="badges-row">
+            <span class="category-tag">
+              {{ course()?.category_name }}
+            </span>
+            <span class="level-tag">
+              {{ course()?.level }}
+            </span>
+          </div>
+
+          <h1 class="course-title">
+            {{ course()?.title }}
+          </h1>
+          <p class="course-subtitle">
+            {{ course()?.subtitle || course()?.description }}
+          </p>
+        </div>
+
+        <div class="hero-footer border-t border-slate-100">
+          <div class="meta-row">
+            <div class="rating-badge">
+              <span class="material-symbols-outlined star-icon">star</span>
+              <span>{{ course()?.rating }} Rating</span>
+            </div>
+            <div class="hours-badge">
+              <span class="material-symbols-outlined clock-icon">schedule</span>
+              <span>{{ course()?.total_hours }}</span>
+            </div>
+            <div class="instructor-badge">
+              <span class="material-symbols-outlined user-icon">person</span>
+              <span>By {{ course()?.instructor_name }}</span>
+            </div>
+          </div>
+
+          <!-- Enroll / Continue Action -->
+          <div class="action-row">
+            <button *ngIf="!course()?.isEnrolled" (click)="enroll()" [disabled]="isEnrolling()" class="enroll-btn">
+              <span *ngIf="!isEnrolling()">Enroll Now (${{ course()?.price }})</span>
+              <span *ngIf="isEnrolling()">Enrolling...</span>
+            </button>
+
+            <a *ngIf="course()?.isEnrolled" routerLink="/student/my-learning" class="continue-btn">
+              <span class="material-symbols-outlined">play_circle</span> Continue Learning
+            </a>
+
+            <p *ngIf="enrollSuccess()" class="success-msg">
+              🎉 Enrolled successfully!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thumbnail Preview -->
+      <div class="hero-preview-col">
+        <img [src]="course()?.thumbnail_url" [alt]="course()?.title" />
+      </div>
+    </div>
+
+    <!-- Syllabus Accordion -->
+    <div class="syllabus-card">
+      <h2 class="syllabus-title">Course Syllabus</h2>
+
+      <div *ngIf="course()?.modules?.length" class="modules-list">
+        <div *ngFor="let mod of course()?.modules" class="module-item">
+          <h3 class="module-header">
+            <span>{{ mod.title }}</span>
+            <span class="lessons-count">{{ mod.lessons?.length || 0 }} lessons</span>
+          </h3>
+
+          <ul *ngIf="mod.lessons?.length" class="lessons-list">
+            <li *ngFor="let lesson of mod.lessons" class="lesson-item">
+              <div class="lesson-left">
+                <span class="material-symbols-outlined play-icon">play_circle</span>
+                <span>{{ lesson.title }}</span>
+              </div>
+              <span class="lesson-duration">{{ lesson.duration_minutes }}m</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

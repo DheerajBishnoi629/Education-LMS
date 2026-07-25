@@ -1,0 +1,54 @@
+<div class="user-management-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">User Management</h2>
+      <p class="page-subtitle">Manage user accounts, roles, and platform permissions.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && users().length" class="table-card">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Created Date</th>
+          <th class="text-center">Status</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users()">
+          <td class="user-cell">
+            <div class="user-info">
+              <div class="avatar">
+                <img *ngIf="user.photo_url" [src]="user.photo_url" [alt]="user.name" />
+                <span *ngIf="!user.photo_url">{{ user.name.charAt(0) }}</span>
+              </div>
+              <div>
+                <p class="name">{{ user.name }}</p>
+                <p class="email">{{ user.email }}</p>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="role-badge" [class.student]="user.role === 'student'" [class.teacher]="user.role === 'teacher'" [class.admin]="user.role === 'admin'">
+              {{ user.role }}
+            </span>
+          </td>
+          <td>{{ user.created_at | date:'mediumDate' }}</td>
+          <td class="text-center">
+            <span class="status-badge">{{ user.status }}</span>
+          </td>
+          <td class="text-center">
+            <button class="edit-role-btn">Edit Role</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

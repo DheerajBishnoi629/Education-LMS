@@ -1,0 +1,65 @@
+<div class="financial-reports-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Financial Reports</h2>
+      <p class="page-subtitle">Track platform GMV, instructor payouts, and transaction histories.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && financials()" class="financials-content">
+    <!-- Stat Cards -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <p class="stat-label">Gross Platform Volume</p>
+        <h3 class="stat-val">${{ financials()?.summary?.grossVolume | number:'1.2-2' }}</h3>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Net Revenue</p>
+        <h3 class="stat-val">${{ financials()?.summary?.netRevenue | number:'1.2-2' }}</h3>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Teacher Payouts</p>
+        <h3 class="stat-val">${{ financials()?.summary?.teacherPayouts | number:'1.2-2' }}</h3>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Active Subscriptions</p>
+        <h3 class="stat-val">{{ financials()?.summary?.activeSubscriptions | number }}</h3>
+      </div>
+    </div>
+
+    <!-- Recent Transactions Table -->
+    <div class="table-card">
+      <div class="card-header">
+        <h3 class="card-title">Recent Financial Transactions</h3>
+      </div>
+      <table class="financials-table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Type</th>
+            <th>Entity / User</th>
+            <th>Date</th>
+            <th class="text-right">Amount</th>
+            <th class="text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of financials()?.recentTransactions">
+            <td class="font-mono">{{ tx.id }}</td>
+            <td class="font-medium">{{ tx.type }}</td>
+            <td>{{ tx.user }}</td>
+            <td>{{ tx.date | date:'mediumDate' }}</td>
+            <td class="text-right font-mono font-bold">${{ tx.amount | number:'1.2-2' }}</td>
+            <td class="text-center">
+              <span class="status-badge">{{ tx.status }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

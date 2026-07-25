@@ -1,0 +1,40 @@
+<div class="certificates-container">
+  <div class="page-header">
+    <h1 class="page-title">Verified Certificates</h1>
+    <p class="page-subtitle">Showcase your completed course credentials and achievements.</p>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && certificates().length" class="certificates-grid">
+    <div *ngFor="let item of certificates()" class="cert-card">
+      <div class="card-left">
+        <div class="icon-avatar">
+          <span class="material-symbols-outlined">verified_user</span>
+        </div>
+        <div>
+          <h3 class="cert-title">{{ item.course_title }}</h3>
+          <p class="instructor-text">Issued by {{ item.instructor_name }}</p>
+          <span class="code-badge">
+            ID: {{ item.certificate_code }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card-bottom">
+        <span class="issued-date">Issued on {{ item.issued_at | date:'mediumDate' }}</span>
+        <button class="download-btn">
+          <span class="material-symbols-outlined icon">download</span> Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading() && !certificates().length" class="empty-state">
+    <span class="material-symbols-outlined empty-icon">workspace_premium</span>
+    <h3 class="empty-title">No certificates earned yet</h3>
+    <p class="empty-text">Complete 100% of a course to unlock your verified certificate.</p>
+  </div>
+</div>

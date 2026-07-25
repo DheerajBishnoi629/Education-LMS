@@ -1,0 +1,44 @@
+<div class="wishlist-container">
+  <div class="page-header">
+    <h1 class="page-title">Saved Wishlist</h1>
+    <p class="page-subtitle">Courses you have saved for later enrollment.</p>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && courses().length" class="wishlist-grid">
+    <div *ngFor="let course of courses()" class="wishlist-card">
+      <div class="card-image">
+        <img [src]="course.thumbnail_url" [alt]="course.title" />
+        <div class="category-badge">
+          {{ course.category_name }}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div>
+          <h3 class="course-title">{{ course.title }}</h3>
+          <p class="course-subtitle">{{ course.subtitle }}</p>
+        </div>
+
+        <div class="card-bottom">
+          <span class="course-price">${{ course.price }}</span>
+          <a [routerLink]="['/student/course', course.id]" class="view-btn">
+            View Course
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading() && !courses().length" class="empty-state">
+    <span class="material-symbols-outlined empty-icon">favorite_border</span>
+    <h3 class="empty-title">Your wishlist is empty</h3>
+    <p class="empty-text">Explore the marketplace and click the heart icon to save courses.</p>
+    <a routerLink="/student/browse" class="browse-btn">
+      Browse Courses
+    </a>
+  </div>
+</div>

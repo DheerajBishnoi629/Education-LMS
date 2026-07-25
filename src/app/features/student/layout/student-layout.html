@@ -1,0 +1,129 @@
+<div class="student-layout-container">
+  <!-- Desktop & Mobile Sidebar Navigation -->
+  <nav class="sidebar" [class.sidebar-open]="isMobileMenuOpen()">
+    <!-- Brand Header -->
+    <div class="brand-header">
+      <div class="brand-logo">E</div>
+      <div class="brand-info">
+        <h1 class="brand-title">EduForge</h1>
+        <p class="brand-subtitle">Student Portal</p>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="nav-links">
+      <a routerLink="/student/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">dashboard</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+
+      <a routerLink="/student/browse" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">search</span>
+        <span class="nav-text">Browse Courses</span>
+      </a>
+
+      <a routerLink="/student/my-learning" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">school</span>
+        <span class="nav-text">My Learning</span>
+      </a>
+
+      <a routerLink="/student/assignments" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">assignment</span>
+        <span class="nav-text">Assignments</span>
+      </a>
+
+      <a routerLink="/student/quizzes" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">quiz</span>
+        <span class="nav-text">Quizzes</span>
+      </a>
+
+      <a routerLink="/student/certificates" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">verified_user</span>
+        <span class="nav-text">Certificates</span>
+      </a>
+
+      <a routerLink="/student/wishlist" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+        <span class="material-symbols-outlined nav-icon">favorite</span>
+        <span class="nav-text">Wishlist</span>
+      </a>
+    </div>
+
+    <!-- Upgrade Card -->
+    <div class="upgrade-card-wrapper">
+      <div class="upgrade-card">
+        <h4 class="upgrade-title">Upgrade to Pro</h4>
+        <p class="upgrade-desc">Get unlimited access to 2,400+ courses & certificates.</p>
+        <button class="upgrade-btn">Upgrade Now</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar Overlay for Mobile -->
+  <div *ngIf="isMobileMenuOpen()" (click)="toggleMobileMenu()" class="sidebar-overlay"></div>
+
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <!-- Top Header -->
+    <header class="top-header">
+      <!-- Search Bar -->
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" placeholder="Search courses, skills, assignments..." class="search-input" />
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button (click)="toggleMobileMenu()" class="mobile-menu-btn">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+
+      <!-- Right Actions -->
+      <div class="header-actions">
+        <button class="action-btn notification-btn">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="notification-badge"></span>
+        </button>
+
+        <button class="action-btn chat-btn">
+          <span class="material-symbols-outlined">chat</span>
+        </button>
+
+        <div class="divider"></div>
+
+        <!-- User Profile Dropdown -->
+        <div class="user-dropdown-container">
+          <button (click)="toggleUserDropdown()" class="user-trigger">
+            <div class="user-avatar">
+              <img *ngIf="authService.currentUser()?.photoUrl" [src]="authService.currentUser()?.photoUrl" alt="Avatar" />
+              <span *ngIf="!authService.currentUser()?.photoUrl">
+                {{ authService.currentUser()?.name?.charAt(0) || 'S' }}
+              </span>
+            </div>
+            <span class="user-name">
+              {{ authService.currentUser()?.name || 'Student' }}
+            </span>
+            <span class="material-symbols-outlined dropdown-arrow">expand_more</span>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div *ngIf="isUserDropdownOpen()" class="dropdown-menu">
+            <div class="dropdown-header">
+              <p class="user-full-name">{{ authService.currentUser()?.name }}</p>
+              <p class="user-email">{{ authService.currentUser()?.email }}</p>
+            </div>
+            <a routerLink="/student/dashboard" (click)="isUserDropdownOpen.set(false)" class="dropdown-item">
+              <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <button (click)="logout()" class="dropdown-item logout-item">
+              <span class="material-symbols-outlined">logout</span> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Canvas Content -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

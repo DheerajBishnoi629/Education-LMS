@@ -1,0 +1,55 @@
+<div class="learning-container">
+  <div class="page-header">
+    <h1 class="page-title">My Learning</h1>
+    <p class="page-subtitle">Track and continue your enrolled courses & progress.</p>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && courses().length" class="learning-grid">
+    <div *ngFor="let item of courses()" class="learning-card">
+      <div class="card-image">
+        <img [src]="item.thumbnail_url" [alt]="item.title" />
+        <div class="category-badge">
+          {{ item.category_name }}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div>
+          <h3 class="course-title">
+            {{ item.title }}
+          </h3>
+          <p class="instructor-text">
+            Instructor: {{ item.instructor_name }}
+          </p>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-info">
+            <span>Progress</span>
+            <span class="progress-num">{{ item.progress_percentage }}%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="item.progress_percentage"></div>
+          </div>
+
+          <a [routerLink]="['/student/course', item.course_id]" class="continue-btn">
+            Continue Course
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading() && !courses().length" class="empty-state">
+    <span class="material-symbols-outlined empty-icon">school</span>
+    <h3 class="empty-title">No enrolled courses yet</h3>
+    <p class="empty-text">Browse the marketplace and enroll in your first course!</p>
+    <a routerLink="/student/browse" class="browse-btn">
+      Browse Courses
+    </a>
+  </div>
+</div>

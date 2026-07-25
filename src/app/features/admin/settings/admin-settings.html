@@ -1,0 +1,99 @@
+<div class="admin-settings-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Platform Settings</h2>
+      <p class="page-subtitle">Manage core configuration, security protocols, and external integrations for the EduForge platform.</p>
+    </div>
+    <div *ngIf="saveMessage()" class="save-success-alert">
+      <span class="material-symbols-outlined icon">check_circle</span>
+      <span>{{ saveMessage() }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <form *ngIf="!isLoading() && settings()" (ngSubmit)="saveSettings()" class="settings-form">
+    <!-- General Settings -->
+    <div class="settings-card">
+      <div class="card-header">
+        <h3 class="card-title">General Platform Information</h3>
+      </div>
+      <div class="card-body grid-2">
+        <div class="form-group">
+          <label class="form-label">Platform Title</label>
+          <input type="text" [(ngModel)]="settings()!.siteName" name="siteName" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Support Email Address</label>
+          <input type="email" [(ngModel)]="settings()!.supportEmail" name="supportEmail" class="form-input" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Auth Settings -->
+    <div class="settings-card">
+      <div class="card-header">
+        <h3 class="card-title">Security & Access Protocols</h3>
+      </div>
+      <div class="card-body flex-col">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="settings()!.enableSelfRegistration" name="enableSelfRegistration" class="checkbox-input" />
+          <div>
+            <span class="label-title">Enable Self Registration</span>
+            <p class="label-desc">Allow new students and teachers to create accounts publicly.</p>
+          </div>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="settings()!.requireEmailVerification" name="requireEmailVerification" class="checkbox-input" />
+          <div>
+            <span class="label-title">Require Email Verification</span>
+            <p class="label-desc">Require users to verify their email via Firebase Auth before accessing content.</p>
+          </div>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="settings()!.maintenanceMode" name="maintenanceMode" class="checkbox-input" />
+          <div>
+            <span class="label-title">Maintenance Mode</span>
+            <p class="label-desc">Restrict platform access to Super Admins only during system maintenance.</p>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Media & Storage Limits -->
+    <div class="settings-card">
+      <div class="card-header">
+        <h3 class="card-title">Storage & Payment Gateway</h3>
+      </div>
+      <div class="card-body grid-2">
+        <div class="form-group">
+          <label class="form-label">Max Lesson Video Size (MB)</label>
+          <input type="number" [(ngModel)]="settings()!.maxVideoUploadMb" name="maxVideoUploadMb" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Active Payment Gateway</label>
+          <select [(ngModel)]="settings()!.paymentGateway" name="paymentGateway" class="form-select">
+            <option value="Stripe">Stripe Integration</option>
+            <option value="PayPal">PayPal Commerce</option>
+            <option value="Razorpay">Razorpay Gateway</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Footer -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="isSaving()" class="save-btn">
+        <span *ngIf="!isSaving()">Save Settings</span>
+        <span *ngIf="isSaving()">Saving...</span>
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,46 @@
+<div class="teacher-students-container">
+  <div class="page-header">
+    <h2 class="page-title">Enrolled Students</h2>
+    <p class="page-subtitle">Track student progress and active course enrollments.</p>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && students().length" class="table-card">
+    <table class="students-table">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Course Title</th>
+          <th>Enrolled Date</th>
+          <th class="text-right">Progress</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students()">
+          <td class="student-cell">
+            <div class="user-info">
+              <div class="avatar">
+                <img *ngIf="student.photo_url" [src]="student.photo_url" [alt]="student.name" />
+                <span *ngIf="!student.photo_url">{{ student.name.charAt(0) }}</span>
+              </div>
+              <div>
+                <p class="name">{{ student.name }}</p>
+                <p class="email">{{ student.email }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="course-cell">{{ student.course_title }}</td>
+          <td>{{ student.enrolled_at | date:'mediumDate' }}</td>
+          <td class="text-right font-mono">{{ student.progress_percentage }}%</td>
+          <td class="text-center">
+            <button class="message-btn">Message</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

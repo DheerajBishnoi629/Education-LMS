@@ -1,0 +1,35 @@
+<div class="teacher-payments-container">
+  <div class="page-header">
+    <h2 class="page-title">Payouts & Transaction History</h2>
+    <p class="page-subtitle">Track your earnings deposits and payout methods.</p>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && payments().length" class="table-card">
+    <table class="payments-table">
+      <thead>
+        <tr>
+          <th>Payout ID</th>
+          <th>Date</th>
+          <th>Payment Method</th>
+          <th class="text-right">Amount</th>
+          <th class="text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pay of payments()">
+          <td class="font-mono">{{ pay.id }}</td>
+          <td>{{ pay.date | date:'mediumDate' }}</td>
+          <td>{{ pay.method }}</td>
+          <td class="text-right font-mono font-bold">${{ pay.amount | number:'1.2-2' }}</td>
+          <td class="text-center">
+            <span class="status-badge">{{ pay.status }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

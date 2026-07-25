@@ -1,117 +1,191 @@
 <div class="dashboard-container">
-  <aside class="sidebar">
-    <div class="brand">
-      <span class="material-symbols-outlined logo-icon">auto_stories</span>
-      <span class="brand-name">EduForge</span>
-    </div>
-    <nav class="nav-links">
-      <a class="nav-item active">
-        <span class="material-symbols-outlined">dashboard</span>
-        Dashboard
-      </a>
-      <a class="nav-item">
-        <span class="material-symbols-outlined">menu_book</span>
-        My Courses
-      </a>
-      <a class="nav-item">
-        <span class="material-symbols-outlined">workspace_premium</span>
-        Certificates
-      </a>
-      <a class="nav-item">
-        <span class="material-symbols-outlined">settings</span>
-        Settings
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="btn-logout" (click)="logout()">
-        <span class="material-symbols-outlined">logout</span>
-        Sign Out
-      </button>
-    </div>
-  </aside>
 
-  <main class="main-content">
-    <header class="header">
-      <div class="user-welcome">
-        <h1>Student Portal</h1>
-        @if (dashboardData()) {
-          <p>{{ dashboardData()?.message }}</p>
-        }
-      </div>
-      <div class="profile-chip">
-        <div class="avatar">S</div>
-        <span class="role-badge">Student</span>
-      </div>
-    </header>
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-state">
+    <div class="spinner"></div>
+  </div>
 
-    @if (errorMessage()) {
-      <div class="alert-danger">
-        <span class="material-symbols-outlined">error</span>
-        <span>{{ errorMessage() }}</span>
+  <div *ngIf="!isLoading() && dashboardData()" class="dashboard-content">
+    <!-- Hero Banner Section -->
+    <section class="hero-card">
+      <div class="hero-text-col">
+        <h2 class="hero-greeting">
+          Welcome back, {{ authService.currentUser()?.name || 'Alex' }}!
+        </h2>
+        <p class="hero-subtext">
+          You've completed <span class="hero-highlight">{{ dashboardData()?.weeklyProgressPercent }}%</span> of your weekly goal. Keep up the great momentum!
+        </p>
+        <a routerLink="/student/my-learning" class="hero-btn">
+          Resume Learning
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
       </div>
-    }
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">
-          <span class="material-symbols-outlined">school</span>
-        </div>
-        <div class="stat-info">
-          <h3>Enrolled Courses</h3>
-          <p class="stat-value">
-            {{ dashboardData()?.data?.courses?.length || 0 }}
-          </p>
+      <div class="hero-banner-col">
+        <div class="banner-gradient-box">
+          <span class="material-symbols-outlined banner-bg-icon">school</span>
+          <span class="banner-badge">EduForge LMS</span>
+          <h3 class="banner-title">Master Modern Skills</h3>
+          <p class="banner-subtitle">Interactive modules & hands-on projects</p>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon">
-          <span class="material-symbols-outlined">hourglass_empty</span>
-        </div>
-        <div class="stat-info">
-          <h3>Hours Spent</h3>
-          <p class="stat-value">24.5</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">
-          <span class="material-symbols-outlined">task_alt</span>
-        </div>
-        <div class="stat-info">
-          <h3>Completed Tasks</h3>
-          <p class="stat-value">18</p>
-        </div>
-      </div>
-    </div>
+      <div class="hero-bg-glow"></div>
+    </section>
 
-    <section class="courses-section">
-      <div class="section-header">
-        <h2>My Courses</h2>
-      </div>
-      <div class="courses-list">
-        @if (dashboardData()?.data?.courses) {
-          @for (course of dashboardData()?.data?.courses; track course) {
-            <div class="course-card">
-              <div class="course-glow"></div>
-              <div class="course-content">
-                <span class="material-symbols-outlined course-icon">computer</span>
-                <h3>{{ course }}</h3>
-                <div class="progress-bar-container">
-                  <div class="progress-bar-fill" style="width: 45%;"></div>
-                </div>
-                <div class="course-meta">
-                  <span>Progress: 45%</span>
-                  <button class="btn-resume">Resume</button>
-                </div>
-              </div>
-            </div>
-          }
-        } @else {
-          <div class="empty-state">
-            <span class="material-symbols-outlined">menu_book</span>
-            <p>No active courses found.</p>
+    <!-- Bento Grid Layout -->
+    <div class="bento-grid">
+
+      <!-- Continue Learning (Main In-Progress Course) -->
+      <div class="bento-item continue-card">
+        <div class="card-header">
+          <div>
+            <span class="status-tag">In Progress</span>
+            <h3 class="course-title">
+              {{ dashboardData()?.inProgressCourse?.course_title || 'Advanced UI/UX Masterclass' }}
+            </h3>
+            <p class="module-title">
+              {{ dashboardData()?.inProgressCourse?.subtitle || 'Module 4: Prototyping Interactions' }}
+            </p>
           </div>
-        }
+          <div class="icon-avatar">
+            <span class="material-symbols-outlined">brush</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <div class="progress-info">
+            <span>Progress</span>
+            <span class="progress-percent">
+              {{ dashboardData()?.inProgressCourse?.progress_percentage }}%
+            </span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" [style.width.%]="dashboardData()?.inProgressCourse?.progress_percentage"></div>
+          </div>
+          <div class="btn-group">
+            <a routerLink="/student/my-learning" class="continue-btn">
+              Continue Lesson
+            </a>
+            <button class="more-btn">
+              <span class="material-symbols-outlined">more_horiz</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Goal Donut Chart -->
+      <div class="bento-item goal-card">
+        <h3 class="goal-title">Weekly Goal</h3>
+        <div class="chart-box">
+          <canvas #goalChartCanvas></canvas>
+          <div class="chart-center-text">
+            <span class="completed-num">
+              {{ dashboardData()?.weeklyGoal?.completedHours }}
+            </span>
+            <span class="target-num">
+              / {{ dashboardData()?.weeklyGoal?.targetHours }} hrs
+            </span>
+          </div>
+        </div>
+        <p class="goal-subtext">
+          {{ dashboardData()?.weeklyGoal?.targetHours! - dashboardData()?.weeklyGoal?.completedHours! }} hours left to reach your goal!
+        </p>
+      </div>
+
+      <!-- Streak Card -->
+      <div class="bento-item streak-card">
+        <div class="streak-icon-box">
+          <span class="material-symbols-outlined">local_fire_department</span>
+        </div>
+        <h3 class="streak-num">
+          {{ dashboardData()?.streakDays }} Days
+        </h3>
+        <p class="streak-label">Learning Streak</p>
+      </div>
+
+      <!-- Activity Line Chart -->
+      <div class="bento-item activity-card">
+        <div class="activity-header">
+          <h3 class="activity-title">Activity (Last 7 Days)</h3>
+          <span class="material-symbols-outlined activity-icon">show_chart</span>
+        </div>
+        <div class="chart-canvas-container">
+          <canvas #activityChartCanvas></canvas>
+        </div>
+      </div>
+
+      <!-- Upcoming Events / Assignments Stack -->
+      <div class="bento-item stack-column">
+        <!-- Upcoming Assignment -->
+        <div *ngIf="dashboardData()?.upcomingAssignments?.length" class="stack-card assignment-card">
+          <div class="icon-badge amber-badge">
+            <span class="material-symbols-outlined">assignment_turned_in</span>
+          </div>
+          <div class="stack-info">
+            <p class="badge-text amber-text">Due Soon</p>
+            <h4 class="stack-title">
+              {{ dashboardData()?.upcomingAssignments?.[0]?.title }}
+            </h4>
+          </div>
+          <a routerLink="/student/assignments" class="stack-link">
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+
+        <!-- Recent Quiz Score -->
+        <div *ngIf="dashboardData()?.recentQuizzes?.length" class="stack-card quiz-card">
+          <div class="icon-badge emerald-badge">
+            <span class="material-symbols-outlined">done_all</span>
+          </div>
+          <div class="stack-info">
+            <p class="badge-text emerald-text">
+              Score: {{ dashboardData()?.recentQuizzes?.[0]?.score_percentage }}%
+            </p>
+            <h4 class="stack-title">
+              {{ dashboardData()?.recentQuizzes?.[0]?.title }}
+            </h4>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recommended Courses Section -->
+    <section class="recommended-section">
+      <div class="section-header">
+        <h3 class="section-title">Recommended for You</h3>
+        <a routerLink="/student/browse" class="view-all-link">
+          View All <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="courses-grid">
+        <div *ngFor="let course of dashboardData()?.recommendedCourses" class="course-card">
+          <div class="card-image-box">
+            <img [src]="course.thumbnail_url" [alt]="course.title" />
+            <div class="category-pill">
+              {{ course.category_name }}
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="course-card-title">
+              {{ course.title }}
+            </h4>
+            <p class="course-card-desc">
+              {{ course.subtitle }}
+            </p>
+            <div class="card-footer">
+              <div class="duration-text">
+                <span class="material-symbols-outlined">schedule</span>
+                {{ course.total_hours }}
+              </div>
+              <a [routerLink]="['/student/course', course.id]" class="detail-link">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
-  </main>
+  </div>
 </div>

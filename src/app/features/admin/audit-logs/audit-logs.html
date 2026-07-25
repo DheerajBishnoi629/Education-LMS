@@ -1,0 +1,41 @@
+<div class="audit-logs-container">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Audit Logs</h2>
+      <p class="page-subtitle">Comprehensive security and system activity history across the EduForge platform.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!isLoading() && logs().length" class="table-card">
+    <table class="logs-table">
+      <thead>
+        <tr>
+          <th>Log ID</th>
+          <th>Timestamp</th>
+          <th>Event Description</th>
+          <th>User / Identity</th>
+          <th>IP Address</th>
+          <th class="text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs()" [class.warning-row]="log.status === 'Warning'">
+          <td class="font-mono">{{ log.id }}</td>
+          <td class="font-mono">{{ log.timestamp }}</td>
+          <td class="font-medium">{{ log.event }}</td>
+          <td>{{ log.user }}</td>
+          <td class="font-mono">{{ log.ip }}</td>
+          <td class="text-center">
+            <span class="status-pill" [class.success]="log.status === 'Success'" [class.processing]="log.status === 'Processing'" [class.warning]="log.status === 'Warning'">
+              {{ log.status }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

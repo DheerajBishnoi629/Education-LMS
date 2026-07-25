@@ -1,0 +1,81 @@
+<div class="teacher-courses-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">My Courses</h2>
+      <p class="page-subtitle">Manage and organize your instructional content.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/teacher/course/create" class="create-btn">
+        <span class="material-symbols-outlined icon">add</span>
+        <span>Create Course</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Course Grid -->
+  <div *ngIf="!isLoading() && courses().length" class="courses-grid">
+    <div *ngFor="let course of courses()" class="course-card" [class.draft-card]="course.status === 'Draft'">
+      <!-- Thumbnail Box -->
+      <div class="card-image">
+        <img [src]="course.thumbnail_url" [alt]="course.title" />
+        <div class="status-badge" [class.published]="course.status === 'Published'" [class.draft]="course.status === 'Draft'">
+          <span class="material-symbols-outlined icon">
+            {{ course.status === 'Published' ? 'public' : 'edit_document' }}
+          </span>
+          <span>{{ course.status }}</span>
+        </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <h3 class="course-title">{{ course.title }}</h3>
+
+        <!-- Metrics Row -->
+        <div class="metrics-row">
+          <span class="metric-item">
+            <span class="material-symbols-outlined icon">group</span>
+            <span>{{ course.student_count || '--' }} Students</span>
+          </span>
+
+          <span class="dot"></span>
+
+          <span class="metric-item rating" *ngIf="course.rating">
+            <span class="material-symbols-outlined icon fill">star</span>
+            <span>{{ course.rating }} Rating</span>
+          </span>
+          <span class="metric-item" *ngIf="!course.rating">
+            <span class="material-symbols-outlined icon">star</span>
+            <span>-- Rating</span>
+          </span>
+        </div>
+
+        <!-- Action Footer -->
+        <div class="card-footer">
+          <button class="edit-btn">
+            <span class="material-symbols-outlined icon">
+              {{ course.status === 'Published' ? 'edit' : 'build' }}
+            </span>
+            <span>{{ course.status === 'Published' ? 'Edit Course' : 'Continue Building' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading() && !courses().length" class="empty-state">
+    <span class="material-symbols-outlined empty-icon">school</span>
+    <h3 class="empty-title">No Courses Yet</h3>
+    <p class="empty-text">Create your first course to begin sharing knowledge with your students.</p>
+    <a routerLink="/teacher/course/create" class="create-first-btn">
+      <span class="material-symbols-outlined icon">add</span>
+      <span>Create First Course</span>
+    </a>
+  </div>
+</div>
