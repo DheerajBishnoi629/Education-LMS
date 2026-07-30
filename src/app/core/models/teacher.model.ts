@@ -15,6 +15,7 @@ export interface TeacherCourse {
   category_name: string;
   level: string;
   thumbnail_url: string;
+  playlist_url?: string;
   price: number;
   rating: number;
   total_hours: string;
@@ -69,4 +70,22 @@ export interface TeacherPayment {
   amount: number;
   status: string;
   method: string;
+}
+
+export interface TeacherSubmission {
+  submission_id?: string;
+  assignment_id: string;
+  assignment_title: string;
+  course_title: string;
+  due_date: string;
+  student_id?: string;
+  student_name: string;
+  student_email: string;
+  file_url?: string | null;
+  status: 'pending' | 'submitted' | 'graded';
+  grade?: string;
+  score?: number | null;
+  reupload_status?: 'none' | 'requested' | 'approved' | 'rejected';
+  submitted_at?: string;
+  reupload_requested_at?: string;
 }

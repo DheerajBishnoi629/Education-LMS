@@ -2,7 +2,7 @@
   <div class="page-header">
     <div>
       <h2 class="page-title">Create New Course</h2>
-      <p class="page-subtitle">Publish a new instructional course for your students.</p>
+      <p class="page-subtitle">Publish a new course with custom YouTube playlist embed video series.</p>
     </div>
     <a routerLink="/teacher/courses" class="back-link">
       <span class="material-symbols-outlined icon">arrow_back</span> Back to Courses
@@ -14,13 +14,26 @@
       <!-- Course Title -->
       <div class="form-group col-span-2">
         <label class="form-label">Course Title *</label>
-        <input type="text" [(ngModel)]="title" name="title" required placeholder="e.g. Advanced Reactive Architecture with RxJS" class="form-input" />
+        <input type="text" [(ngModel)]="title" name="title" required placeholder="e.g. Angular 18 Architecture & RxJS" class="form-input" />
       </div>
 
       <!-- Subtitle -->
       <div class="form-group col-span-2">
         <label class="form-label">Subtitle / Short Summary</label>
-        <input type="text" [(ngModel)]="subtitle" name="subtitle" placeholder="e.g. Master reactive state management & async flows" class="form-input" />
+        <input type="text" [(ngModel)]="subtitle" name="subtitle" placeholder="e.g. Master signals, state management & async flows" class="form-input" />
+      </div>
+
+      <!-- YouTube Playlist Link or Iframe -->
+      <div class="form-group col-span-2">
+        <label class="form-label">YouTube Playlist Link or Iframe Embed Code *</label>
+        <input 
+          type="text" 
+          [(ngModel)]="playlistUrl" 
+          name="playlistUrl" 
+          placeholder="Paste YouTube Playlist URL (e.g. https://www.youtube.com/watch?v=...&list=PL...) or <iframe> snippet" 
+          class="form-input" 
+        />
+        <p class="field-hint">Providing a YouTube playlist URL or iframe embed code automatically builds the structured video player workspace for students.</p>
       </div>
 
       <!-- Category -->
@@ -39,14 +52,8 @@
         </select>
       </div>
 
-      <!-- Price -->
-      <div class="form-group">
-        <label class="form-label">Price ($)</label>
-        <input type="number" step="0.01" [(ngModel)]="price" name="price" class="form-input" />
-      </div>
-
       <!-- Thumbnail URL -->
-      <div class="form-group">
+      <div class="form-group col-span-2">
         <label class="form-label">Thumbnail Image URL</label>
         <input type="url" [(ngModel)]="thumbnailUrl" name="thumbnailUrl" class="form-input" />
       </div>

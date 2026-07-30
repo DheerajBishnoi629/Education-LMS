@@ -9,6 +9,7 @@ import {
   TeacherAnalyticsData,
   TeacherStudent,
   TeacherPayment,
+  TeacherSubmission,
 } from '../models/teacher.model';
 
 @Injectable({
@@ -89,5 +90,52 @@ export class TeacherService {
       )
     );
     return response.payments;
+  }
+
+  async getTeacherAssignments(): Promise<TeacherSubmission[]> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.get<{ success: boolean; assignments: TeacherSubmission[] }>(
+        `${environment.apiUrl}/teacher/assignments`,
+        { headers }
+      )
+    );
+    return response.assignments;
+  }
+
+  async gradeSubmission(submissionId: string, score: number): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean }>(
+        `${environment.apiUrl}/teacher/submissions/${submissionId}/grade`,
+        { score },
+        { headers }
+      )
+    );
+    return response.success;
+  }
+
+  async respondReuploadRequest(submissionId: string, approve: boolean): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean }>(
+        `${environment.apiUrl}/teacher/submissions/${submissionId}/reupload-permission`,
+        { approve },
+        { headers }
+      )
+    );
+    return response.success;
+  }
+
+  async createAssignment(assignmentData: { course_id: string; title: string; description: string; due_date?: string }): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean }>(
+        `${environment.apiUrl}/teacher/assignments`,
+        assignmentData,
+        { headers }
+      )
+    );
+    return response.success;
   }
 }

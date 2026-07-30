@@ -42,14 +42,14 @@
 
   <!-- Course Cards Grid -->
   <div *ngIf="!isLoading() && courses().length" class="courses-grid">
-    <div *ngFor="let course of courses()" class="browse-card">
+    <div *ngFor="let course of courses()" [routerLink]="['/student/course', course.id]" class="browse-card">
       <div class="card-image">
         <img [src]="course.thumbnail_url" [alt]="course.title" />
         <div class="category-badge">
           {{ course.category_name }}
         </div>
         <div class="price-badge">
-          ${{ course.price }}
+          Free
         </div>
       </div>
 
@@ -74,7 +74,7 @@
           </div>
 
           <a [routerLink]="['/student/course', course.id]" class="view-btn">
-            View Details
+            Watch Playlist
           </a>
         </div>
       </div>

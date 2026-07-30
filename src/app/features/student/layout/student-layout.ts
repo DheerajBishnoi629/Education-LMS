@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-student-layout',
@@ -12,6 +13,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 })
 export class StudentLayout {
   authService = inject(AuthService);
+  permissionService = inject(PermissionService);
   router = inject(Router);
 
   isMobileMenuOpen = signal(false);

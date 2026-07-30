@@ -1,0 +1,201 @@
+<div class="teacher-assignments-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Assignment Submissions & Grading</h1>
+      <p class="page-subtitle">Review student .zip uploads, grade submissions (0 - 100), and create new course assignments.</p>
+    </div>
+    <button (click)="openCreateModal()" class="create-assignment-btn">
+      <span class="material-symbols-outlined icon">add</span>
+      <span>Create New Assignment</span>
+    </button>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="card-icon blue">
+        <span class="material-symbols-outlined">folder_zip</span>
+      </div>
+      <div class="card-info">
+        <p class="card-label">Total Submissions</p>
+        <h3 class="card-value">{{ submissions().length }}</h3>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="card-icon amber">
+        <span class="material-symbols-outlined">pending_actions</span>
+      </div>
+      <div class="card-info">
+        <p class="card-label">Pending Grading</p>
+        <h3 class="card-value">{{ pendingGradingCount }}</h3>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="card-icon green">
+        <span class="material-symbols-outlined">lock_reset</span>
+      </div>
+      <div class="card-info">
+        <p class="card-label">Pending Re-upload Requests</p>
+        <h3 class="card-value">{{ pendingReuploadsCount }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="loading-box">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Main Table Section -->
+  <div *ngIf="!isLoading() && submissions().length" class="table-container">
+    <table class="submissions-table">
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Course & Assignment</th>
+          <th>Submitted Zip</th>
+          <th>Status</th>
+          <th>Grade (Out of 100)</th>
+          <th>Re-upload Permission</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of submissions()">
+          <!-- Student Info -->
+          <td>
+            <div class="student-info">
+              <div class="avatar">
+                {{ item.student_name.charAt(0) }}
+              </div>
+              <div>
+                <p class="student-name">{{ item.student_name }}</p>
+                <p class="student-email">{{ item.student_email }}</p>
+              </div>
+            </div>
+          </td>
+
+          <!-- Assignment Info -->
+          <td>
+            <p class="assignment-title">{{ item.assignment_title }}</p>
+            <p class="course-name">{{ item.course_title }}</p>
+          </td>
+
+          <!-- Zip File Access -->
+          <td>
+            <a 
+              *ngIf="item.file_url" 
+              [href]="getDownloadUrl(item.file_url)" 
+              target="_blank" 
+              class="zip-download-link"
+              title="Download Submitted Zip File"
+            >
+              <span class="material-symbols-outlined icon">download</span>
+              <span>Download .zip</span>
+            </a>
+            <span *ngIf="!item.file_url" class="no-file">No file attached</span>
+          </td>
+
+          <!-- Submission Status -->
+          <td>
+            <span class="status-badge" [class]="item.status">
+              {{ item.status | titlecase }}
+            </span>
+          </td>
+
+          <!-- Score Grading Form -->
+          <td>
+            <div *ngIf="item.submission_id" class="grade-input-group">
+              <input 
+                type="number" 
+                min="0" 
+                max="100" 
+                [(ngModel)]="scoresMap[item.submission_id]" 
+                class="score-input"
+                placeholder="0-100" 
+              />
+              <span class="max-score">/ 100</span>
+              <button (click)="saveGrade(item)" class="save-grade-btn">
+                Save
+              </button>
+            </div>
+            <span *ngIf="!item.submission_id" class="no-file">Awaiting Submission</span>
+          </td>
+
+          <!-- Re-upload Permission Action -->
+          <td>
+            <div *ngIf="item.reupload_status === 'requested'" class="reupload-actions">
+              <button (click)="respondReupload(item, true)" class="btn-approve">
+                <span class="material-symbols-outlined icon">check</span>
+                Approve
+              </button>
+              <button (click)="respondReupload(item, false)" class="btn-reject">
+                <span class="material-symbols-outlined icon">close</span>
+                Reject
+              </button>
+            </div>
+
+            <div *ngIf="item.reupload_status !== 'requested'" class="reupload-status">
+              <span *ngIf="item.reupload_status === 'approved'" class="badge approved">
+                Approved
+              </span>
+              <span *ngIf="item.reupload_status === 'rejected'" class="badge rejected">
+                Rejected
+              </span>
+              <span *ngIf="item.reupload_status === 'none'" class="badge none">
+                No Request
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Create Assignment Modal -->
+  <div *ngIf="isCreateModalOpen()" class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="title-group">
+          <span class="material-symbols-outlined modal-icon">assignment_add</span>
+          <h2>Create New Course Assignment</h2>
+        </div>
+        <button (click)="closeCreateModal()" class="close-btn">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Select Target Course *</label>
+          <select [(ngModel)]="newCourseId" class="form-select">
+            <option *ngFor="let c of courses()" [value]="c.id">{{ c.title }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Assignment Title *</label>
+          <input type="text" [(ngModel)]="newTitle" placeholder="e.g. Pandas Data Cleaning Pipeline" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Due Date</label>
+          <input type="date" [(ngModel)]="newDueDate" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Assignment Description / Requirements</label>
+          <textarea rows="3" [(ngModel)]="newDescription" placeholder="Instructions, deliverables, and submission rules..." class="form-textarea"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeCreateModal()" class="btn-cancel">Cancel</button>
+        <button (click)="submitCreateAssignment()" [disabled]="!newTitle.trim() || isSavingAssignment()" class="btn-submit">
+          <span *ngIf="!isSavingAssignment()">Create Assignment</span>
+          <span *ngIf="isSavingAssignment()">Creating...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

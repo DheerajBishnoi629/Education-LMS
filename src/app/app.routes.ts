@@ -24,6 +24,7 @@ import { TeacherAnalytics } from './features/teacher/analytics/teacher-analytics
 import { CourseCreate } from './features/teacher/course-create/course-create';
 import { TeacherStudents } from './features/teacher/students/teacher-students';
 import { TeacherPayments } from './features/teacher/payments/teacher-payments';
+import { TeacherAssignments } from './features/teacher/assignments/teacher-assignments';
 import { AdminLayout } from './features/admin/layout/admin-layout';
 import { AdminDashboard } from './features/admin/admin-dashboard';
 import { AdminSettings } from './features/admin/settings/admin-settings';
@@ -80,6 +81,7 @@ export const routes: Routes = [
       { path: 'course/create', component: CourseCreate },
       { path: 'analytics', component: TeacherAnalytics },
       { path: 'students', component: TeacherStudents },
+      { path: 'assignments', component: TeacherAssignments },
       { path: 'payments', component: TeacherPayments },
     ],
   },

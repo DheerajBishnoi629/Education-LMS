@@ -12,40 +12,54 @@
 
     <!-- Navigation Links -->
     <div class="nav-links">
-      <a routerLink="/student/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMobileMenuOpen.set(false)" class="nav-item">
-        <span class="material-symbols-outlined nav-icon">dashboard</span>
-        <span class="nav-text">Dashboard</span>
-      </a>
+      <ng-container *ngIf="permissionService.hasPermission(permissionService.EDUFORGE_SIDEBAR_STUDENT_DASHBOARD)">
+        <a routerLink="/student/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+          <span class="material-symbols-outlined nav-icon">dashboard</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+      </ng-container>
 
-      <a routerLink="/student/browse" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
-        <span class="material-symbols-outlined nav-icon">search</span>
-        <span class="nav-text">Browse Courses</span>
-      </a>
+      <ng-container *ngIf="permissionService.hasPermission(permissionService.EDUFORGE_SIDEBAR_STUDENT_BROWSE)">
+        <a routerLink="/student/browse" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+          <span class="material-symbols-outlined nav-icon">search</span>
+          <span class="nav-text">Browse Courses</span>
+        </a>
+      </ng-container>
 
-      <a routerLink="/student/my-learning" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
-        <span class="material-symbols-outlined nav-icon">school</span>
-        <span class="nav-text">My Learning</span>
-      </a>
+      <ng-container *ngIf="permissionService.hasPermission(permissionService.EDUFORGE_SIDEBAR_STUDENT_MY_LEARNING)">
+        <a routerLink="/student/my-learning" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+          <span class="material-symbols-outlined nav-icon">school</span>
+          <span class="nav-text">My Learning</span>
+        </a>
+      </ng-container>
 
-      <a routerLink="/student/assignments" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
-        <span class="material-symbols-outlined nav-icon">assignment</span>
-        <span class="nav-text">Assignments</span>
-      </a>
+      <ng-container *ngIf="permissionService.hasPermission(permissionService.EDUFORGE_SIDEBAR_STUDENT_ASSIGNMENTS)">
+        <a routerLink="/student/assignments" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+          <span class="material-symbols-outlined nav-icon">assignment</span>
+          <span class="nav-text">Assignments</span>
+        </a>
+      </ng-container>
 
-      <a routerLink="/student/quizzes" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
-        <span class="material-symbols-outlined nav-icon">quiz</span>
-        <span class="nav-text">Quizzes</span>
-      </a>
+      <ng-container *ngIf="permissionService.hasPermission(permissionService.EDUFORGE_SIDEBAR_STUDENT_QUIZZES)">
+        <a routerLink="/student/quizzes" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+          <span class="material-symbols-outlined nav-icon">quiz</span>
+          <span class="nav-text">Quizzes</span>
+        </a>
+      </ng-container>
 
-      <a routerLink="/student/certificates" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
-        <span class="material-symbols-outlined nav-icon">verified_user</span>
-        <span class="nav-text">Certificates</span>
-      </a>
+      <ng-container *ngIf="permissionService.hasPermission(permissionService.EDUFORGE_SIDEBAR_STUDENT_CERTIFICATES)">
+        <a routerLink="/student/certificates" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+          <span class="material-symbols-outlined nav-icon">verified_user</span>
+          <span class="nav-text">Certificates</span>
+        </a>
+      </ng-container>
 
-      <a routerLink="/student/wishlist" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
-        <span class="material-symbols-outlined nav-icon">favorite</span>
-        <span class="nav-text">Wishlist</span>
-      </a>
+      <ng-container *ngIf="permissionService.hasPermission(permissionService.EDUFORGE_SIDEBAR_STUDENT_WISHLIST)">
+        <a routerLink="/student/wishlist" routerLinkActive="active" (click)="isMobileMenuOpen.set(false)" class="nav-item">
+          <span class="material-symbols-outlined nav-icon">favorite</span>
+          <span class="nav-text">Wishlist</span>
+        </a>
+      </ng-container>
     </div>
 
     <!-- Upgrade Card -->
