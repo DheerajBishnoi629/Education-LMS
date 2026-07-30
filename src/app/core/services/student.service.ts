@@ -105,6 +105,33 @@ export class StudentService {
     return response.assignments;
   }
 
+  async submitAssignmentZip(assignmentId: string, file: File): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const formData = new FormData();
+    formData.append('zipFile', file);
+
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean }>(
+        `${environment.apiUrl}/student/assignments/${assignmentId}/submit`,
+        formData,
+        { headers }
+      )
+    );
+    return response.success;
+  }
+
+  async requestReupload(assignmentId: string): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean }>(
+        `${environment.apiUrl}/student/assignments/${assignmentId}/request-reupload`,
+        {},
+        { headers }
+      )
+    );
+    return response.success;
+  }
+
   async getQuizzes(): Promise<Quiz[]> {
     const headers = await this.getAuthHeaders();
     const response = await firstValueFrom(

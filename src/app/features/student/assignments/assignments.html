@@ -1,7 +1,7 @@
 <div class="assignments-container">
   <div class="page-header">
-    <h1 class="page-title">Assignments</h1>
-    <p class="page-subtitle">Review upcoming deadlines and submit your coursework.</p>
+    <h1 class="page-title">Course Assignments</h1>
+    <p class="page-subtitle">Submit coursework in .zip format, view teacher grades, and manage re-upload permissions.</p>
   </div>
 
   <div *ngIf="isLoading()" class="loading-box">
@@ -12,14 +12,37 @@
     <div *ngFor="let item of assignments()" class="assignment-card">
       <div class="card-left">
         <div class="icon-avatar">
-          <span class="material-symbols-outlined">assignment</span>
+          <span class="material-symbols-outlined">folder_zip</span>
         </div>
         <div class="card-details">
-          <span class="course-badge">
-            {{ item.course_title }}
-          </span>
+          <div class="badge-row">
+            <span class="course-badge">{{ item.course_title }}</span>
+            <span class="status-badge" [class]="item.submission_status">
+              {{ item.submission_status | titlecase }}
+            </span>
+            <span *ngIf="item.score !== null && item.score !== undefined" class="score-badge">
+              Score: {{ item.score }}/100
+            </span>
+          </div>
+
           <h3 class="assignment-title">{{ item.title }}</h3>
           <p class="assignment-desc">{{ item.description }}</p>
+
+          <!-- Re-upload Permission Status Banner -->
+          <div *ngIf="item.reupload_status !== 'none'" class="reupload-status-row">
+            <span *ngIf="item.reupload_status === 'requested'" class="reupload-badge requested">
+              <span class="material-symbols-outlined icon">hourglass_empty</span>
+              Re-upload Permission Requested (Pending Teacher Review)
+            </span>
+            <span *ngIf="item.reupload_status === 'approved'" class="reupload-badge approved">
+              <span class="material-symbols-outlined icon">check_circle</span>
+              Re-upload Approved! You can submit a new .zip file.
+            </span>
+            <span *ngIf="item.reupload_status === 'rejected'" class="reupload-badge rejected">
+              <span class="material-symbols-outlined icon">cancel</span>
+              Re-upload Permission Rejected by Teacher.
+            </span>
+          </div>
         </div>
       </div>
 
@@ -29,8 +52,82 @@
           <p class="due-date">{{ item.due_date | date:'mediumDate' }}</p>
         </div>
 
-        <button class="submit-btn">
-          Submit Work
+        <div class="action-buttons">
+          <!-- Submit / Re-upload Work Button -->
+          <button 
+            *ngIf="item.submission_status === 'pending' || item.reupload_status === 'approved'"
+            (click)="openSubmitModal(item)"
+            class="submit-btn highlight"
+          >
+            <span class="material-symbols-outlined icon">upload_file</span>
+            {{ item.submission_status === 'pending' ? 'Submit Work (.zip)' : 'Re-upload Work (.zip)' }}
+          </button>
+
+          <!-- Request Re-upload Permission Button -->
+          <button 
+            *ngIf="(item.submission_status === 'submitted' || item.submission_status === 'graded') && item.reupload_status !== 'approved' && item.reupload_status !== 'requested'"
+            (click)="requestReupload(item)"
+            class="request-reupload-btn"
+          >
+            <span class="material-symbols-outlined icon">lock_reset</span>
+            Request Re-upload Permission
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading() && !assignments().length" class="empty-state">
+    <span class="material-symbols-outlined empty-icon">assignment_late</span>
+    <h3>No active assignments found</h3>
+  </div>
+
+  <!-- Upload Modal Dialog -->
+  <div *ngIf="isModalOpen()" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="title-group">
+          <span class="material-symbols-outlined modal-icon">folder_zip</span>
+          <h2>Submit Assignment Zip File</h2>
+        </div>
+        <button (click)="closeModal()" class="close-btn">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-subtitle">
+          Submit your work for <strong>{{ selectedAssignment()?.title }}</strong>
+        </p>
+
+        <!-- Dropzone / File Picker -->
+        <div class="file-dropzone" [class.has-file]="selectedFile()">
+          <input type="file" accept=".zip" (change)="onFileSelected($event)" id="zipInput" class="file-input" />
+          <label for="zipInput" class="dropzone-label">
+            <span class="material-symbols-outlined drop-icon">cloud_upload</span>
+            <span class="drop-title" *ngIf="!selectedFile()">Click or Drag & Drop .zip File Here</span>
+            <span class="file-name" *ngIf="selectedFile()">
+              <span class="material-symbols-outlined icon">archive</span>
+              {{ selectedFile()?.name }}
+            </span>
+            <span class="file-size" *ngIf="selectedFile()">
+              ({{ ((selectedFile()?.size || 0) / (1024 * 1024)) | number:'1.1-2' }} MB)
+            </span>
+          </label>
+        </div>
+
+        <p *ngIf="modalError()" class="error-msg">
+          <span class="material-symbols-outlined icon">error</span>
+          {{ modalError() }}
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeModal()" class="btn-cancel">Cancel</button>
+        <button (click)="submitAssignment()" [disabled]="!selectedFile() || isSubmitting()" class="btn-submit">
+          <span *ngIf="!isSubmitting()">Submit Assignment</span>
+          <span *ngIf="isSubmitting()">Uploading...</span>
         </button>
       </div>
     </div>

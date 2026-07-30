@@ -6,31 +6,50 @@
   <!-- Loading State -->
   <div *ngIf="isLoading()" class="loading-box">
     <div class="spinner"></div>
+    <p>Loading course content & video player...</p>
   </div>
 
-  <div *ngIf="!isLoading() && course()" class="detail-content">
-    <!-- Course Hero Card -->
-    <div class="detail-hero-card">
-      <div class="hero-info-col">
-        <div>
-          <div class="badges-row">
-            <span class="category-tag">
-              {{ course()?.category_name }}
-            </span>
-            <span class="level-tag">
-              {{ course()?.level }}
-            </span>
-          </div>
-
-          <h1 class="course-title">
-            {{ course()?.title }}
-          </h1>
-          <p class="course-subtitle">
-            {{ course()?.subtitle || course()?.description }}
-          </p>
+  <div *ngIf="!isLoading() && course()" class="workspace-grid">
+    <!-- Main Left Column: Video Player & Overview -->
+    <div class="main-player-col">
+      <!-- 16:9 Video Player Wrapper -->
+      <div class="video-player-card">
+        <div *ngIf="safeVideoUrl()" class="iframe-aspect-ratio">
+          <iframe
+            [src]="safeVideoUrl()"
+            title="Course Video Player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            class="youtube-iframe">
+          </iframe>
         </div>
 
-        <div class="hero-footer border-t border-slate-100">
+        <div *ngIf="!safeVideoUrl()" class="no-video-placeholder">
+          <img [src]="course()?.thumbnail_url" [alt]="course()?.title" />
+          <div class="play-overlay">
+            <span class="material-symbols-outlined">play_circle</span>
+            <p>Select a lesson from the playlist to watch</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Video Info & Course Metadata -->
+      <div class="video-info-card">
+        <div class="badges-row">
+          <span class="category-tag">{{ course()?.category_name }}</span>
+          <span class="level-tag">{{ course()?.level }}</span>
+          <span class="free-badge">100% Free Access</span>
+        </div>
+
+        <h1 class="video-title">
+          {{ selectedLesson() ? selectedLesson()?.title : course()?.title }}
+        </h1>
+        <p class="course-subtitle">
+          {{ course()?.subtitle || course()?.description }}
+        </p>
+
+        <div class="meta-footer">
           <div class="meta-row">
             <div class="rating-badge">
               <span class="material-symbols-outlined star-icon">star</span>
@@ -46,52 +65,71 @@
             </div>
           </div>
 
-          <!-- Enroll / Continue Action -->
           <div class="action-row">
             <button *ngIf="!course()?.isEnrolled" (click)="enroll()" [disabled]="isEnrolling()" class="enroll-btn">
-              <span *ngIf="!isEnrolling()">Enroll Now (${{ course()?.price }})</span>
-              <span *ngIf="isEnrolling()">Enrolling...</span>
+              <span *ngIf="!isEnrolling()">Save to My Learning (Free)</span>
+              <span *ngIf="isEnrolling()">Saving...</span>
             </button>
 
-            <a *ngIf="course()?.isEnrolled" routerLink="/student/my-learning" class="continue-btn">
-              <span class="material-symbols-outlined">play_circle</span> Continue Learning
-            </a>
+            <span *ngIf="course()?.isEnrolled" class="enrolled-badge">
+              <span class="material-symbols-outlined">check_circle</span> Saved in My Learning
+            </span>
 
             <p *ngIf="enrollSuccess()" class="success-msg">
-              🎉 Enrolled successfully!
+              🎉 Added to your dashboard!
             </p>
           </div>
         </div>
-      </div>
 
-      <!-- Thumbnail Preview -->
-      <div class="hero-preview-col">
-        <img [src]="course()?.thumbnail_url" [alt]="course()?.title" />
+        <!-- Course Description Section -->
+        <div class="description-section">
+          <h2>About this Course</h2>
+          <p>{{ course()?.description }}</p>
+        </div>
       </div>
     </div>
 
-    <!-- Syllabus Accordion -->
-    <div class="syllabus-card">
-      <h2 class="syllabus-title">Course Syllabus</h2>
+    <!-- Right Sidebar Column: Playlist & Lessons -->
+    <div class="playlist-sidebar-col">
+      <div class="playlist-card">
+        <div class="playlist-header">
+          <div>
+            <h3>Course Playlist</h3>
+            <p class="playlist-subtext">Click any video to start watching</p>
+          </div>
+          <span class="playlist-icon material-symbols-outlined">subscriptions</span>
+        </div>
 
-      <div *ngIf="course()?.modules?.length" class="modules-list">
-        <div *ngFor="let mod of course()?.modules" class="module-item">
-          <h3 class="module-header">
-            <span>{{ mod.title }}</span>
-            <span class="lessons-count">{{ mod.lessons?.length || 0 }} lessons</span>
-          </h3>
+        <div *ngIf="course()?.modules?.length" class="modules-accordion">
+          <div *ngFor="let mod of course()?.modules; let mIdx = index" class="module-group">
+            <div class="module-title-bar">
+              <span class="mod-name">{{ mod.title }}</span>
+              <span class="mod-count">{{ mod.lessons?.length || 0 }} videos</span>
+            </div>
 
-          <ul *ngIf="mod.lessons?.length" class="lessons-list">
-            <li *ngFor="let lesson of mod.lessons" class="lesson-item">
-              <div class="lesson-left">
-                <span class="material-symbols-outlined play-icon">play_circle</span>
-                <span>{{ lesson.title }}</span>
-              </div>
-              <span class="lesson-duration">{{ lesson.duration_minutes }}m</span>
-            </li>
-          </ul>
+            <ul *ngIf="mod.lessons?.length" class="lessons-playlist">
+              <li
+                *ngFor="let lesson of mod.lessons; let lIdx = index"
+                (click)="selectLesson(lesson)"
+                [class.active-lesson]="selectedLesson()?.id === lesson.id"
+                class="playlist-item">
+                
+                <div class="item-left">
+                  <span *ngIf="selectedLesson()?.id === lesson.id" class="playing-indicator material-symbols-outlined">volume_up</span>
+                  <span *ngIf="selectedLesson()?.id !== lesson.id" class="play-btn-icon material-symbols-outlined">play_circle</span>
+                  <div class="item-text">
+                    <span class="item-title">{{ lesson.title }}</span>
+                    <span class="item-duration">{{ lesson.duration_minutes }} min</span>
+                  </div>
+                </div>
+
+                <span *ngIf="selectedLesson()?.id === lesson.id" class="now-playing-tag">Playing</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+

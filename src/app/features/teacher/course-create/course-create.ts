@@ -21,7 +21,8 @@ export class CourseCreate {
   subtitle = '';
   category = 'Development';
   level = 'Intermediate';
-  price = 49.99;
+  price = 0.00;
+  playlistUrl = '';
   thumbnailUrl = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop';
   description = '';
 
@@ -39,9 +40,10 @@ export class CourseCreate {
         category_name: this.category,
         level: this.level,
         price: this.price,
+        playlist_url: this.playlistUrl,
         thumbnail_url: this.thumbnailUrl,
         description: this.description,
-        total_hours: '4h 30m',
+        total_hours: '5h 00m',
       });
       this.isSaving.set(false);
       this.router.navigate(['/teacher/courses']);

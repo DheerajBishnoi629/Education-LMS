@@ -27,6 +27,7 @@ export interface Lesson {
   id: string;
   title: string;
   duration_minutes: number;
+  video_url?: string;
 }
 
 export interface StudentDashboardData {
@@ -83,8 +84,12 @@ export interface Assignment {
   description: string;
   due_date: string;
   course_title: string;
+  submission_id?: string;
   submission_status: 'pending' | 'submitted' | 'graded';
   grade?: string;
+  score?: number;
+  file_url?: string;
+  reupload_status?: 'none' | 'requested' | 'approved' | 'rejected';
 }
 
 export interface Quiz {
