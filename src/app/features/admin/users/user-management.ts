@@ -15,9 +15,21 @@ export class UserManagement implements OnInit {
 
   users = signal<AdminUser[]>([]);
   isLoading = signal(true);
+  activeTab = signal<'all' | 'pending'>('all');
+  isProcessing = signal(false);
 
   ngOnInit(): void {
     this.fetchUsers();
+  }
+
+  get pendingTeacherRequests(): AdminUser[] {
+    return this.users().filter(
+      (u) => u.role === 'teacher' && (u.status === 'pending_approval' || u.status === 'pending')
+    );
+  }
+
+  setTab(tab: 'all' | 'pending'): void {
+    this.activeTab.set(tab);
   }
 
   async fetchUsers(): Promise<void> {
@@ -31,4 +43,29 @@ export class UserManagement implements OnInit {
       this.isLoading.set(false);
     }
   }
+
+  async approveTeacher(user: AdminUser): Promise<void> {
+    try {
+      this.isProcessing.set(true);
+      await this.adminService.approveTeacher(user.id);
+      await this.fetchUsers();
+    } catch (err) {
+      console.error('Failed to approve teacher:', err);
+    } finally {
+      this.isProcessing.set(false);
+    }
+  }
+
+  async rejectTeacher(user: AdminUser): Promise<void> {
+    try {
+      this.isProcessing.set(true);
+      await this.adminService.rejectTeacher(user.id);
+      await this.fetchUsers();
+    } catch (err) {
+      console.error('Failed to reject teacher:', err);
+    } finally {
+      this.isProcessing.set(false);
+    }
+  }
 }
+

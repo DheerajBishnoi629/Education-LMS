@@ -8,6 +8,33 @@
     <div class="spinner"></div>
   </div>
 
+  <!-- Certificate Eligibility & Progress Section -->
+  <div *ngIf="!isLoading() && courseProgress().length" class="progress-section">
+    <h2 class="section-title">Course Certificate Eligibility</h2>
+    <p class="section-sub">Requirements: All assignments (3–4 per course) must be submitted and marked as graded by your teacher.</p>
+
+    <div class="progress-cards-grid">
+      <div *ngFor="let prog of courseProgress()" class="progress-card">
+        <div class="prog-info">
+          <h3>{{ prog.course_title }}</h3>
+          <p class="ass-count">
+            Assignments Graded: <strong>{{ prog.graded_assignments }} / {{ prog.total_assignments }}</strong>
+          </p>
+        </div>
+
+        <div class="prog-status">
+          <span *ngIf="prog.is_eligible" class="eligible-badge">
+            <span class="material-symbols-outlined icon">check_circle</span> Certificate Unlocked!
+          </span>
+
+          <span *ngIf="!prog.is_eligible" class="pending-badge">
+            <span class="material-symbols-outlined icon">hourglass_empty</span> Pending Teacher Grading ({{ prog.graded_assignments }}/{{ prog.total_assignments }})
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div *ngIf="!isLoading() && certificates().length" class="certificates-grid">
     <div *ngFor="let item of certificates()" class="cert-card">
       <div class="card-left">
@@ -35,6 +62,7 @@
   <div *ngIf="!isLoading() && !certificates().length" class="empty-state">
     <span class="material-symbols-outlined empty-icon">workspace_premium</span>
     <h3 class="empty-title">No certificates earned yet</h3>
-    <p class="empty-text">Complete 100% of a course to unlock your verified certificate.</p>
+    <p class="empty-text">Complete and pass all course assignments (graded by your teacher) to unlock your verified certificate.</p>
   </div>
 </div>
+

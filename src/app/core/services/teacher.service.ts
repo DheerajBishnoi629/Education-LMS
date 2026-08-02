@@ -127,6 +127,29 @@ export class TeacherService {
     return response.success;
   }
 
+  async getReexamRequests(): Promise<any[]> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.get<{ success: boolean; requests: any[] }>(
+        `${environment.apiUrl}/teacher/reexam-requests`,
+        { headers }
+      )
+    );
+    return response.requests || [];
+  }
+
+  async respondReexamRequest(attemptId: string, approve: boolean): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean }>(
+        `${environment.apiUrl}/teacher/reexam-requests/${attemptId}/respond`,
+        { approve },
+        { headers }
+      )
+    );
+    return response.success;
+  }
+
   async createAssignment(assignmentData: { course_id: string; title: string; description: string; due_date?: string }): Promise<boolean> {
     const headers = await this.getAuthHeaders();
     const response = await firstValueFrom(
@@ -138,4 +161,63 @@ export class TeacherService {
     );
     return response.success;
   }
+
+  async getCourseExam(courseId: string): Promise<{ exam: any; questions: any[] }> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.get<{ success: boolean; exam: any; questions: any[] }>(
+        `${environment.apiUrl}/teacher/courses/${courseId}/exam`,
+        { headers }
+      )
+    );
+    return { exam: response.exam, questions: response.questions || [] };
+  }
+
+  async updateCourseExam(courseId: string, examData: { title?: string; passing_score?: number; total_questions?: number }): Promise<any> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.put<{ success: boolean; exam: any }>(
+        `${environment.apiUrl}/teacher/courses/${courseId}/exam`,
+        examData,
+        { headers }
+      )
+    );
+    return response.exam;
+  }
+
+  async addExamQuestion(courseId: string, questionData: { question_text: string; option_a: string; option_b: string; option_c: string; option_d: string; correct_option: string; order_index?: number }): Promise<any> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; question: any }>(
+        `${environment.apiUrl}/teacher/courses/${courseId}/exam/questions`,
+        questionData,
+        { headers }
+      )
+    );
+    return response.question;
+  }
+
+  async updateExamQuestion(courseId: string, questionId: string, questionData: Partial<{ question_text: string; option_a: string; option_b: string; option_c: string; option_d: string; correct_option: string; order_index: number }>): Promise<any> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.put<{ success: boolean; question: any }>(
+        `${environment.apiUrl}/teacher/courses/${courseId}/exam/questions/${questionId}`,
+        questionData,
+        { headers }
+      )
+    );
+    return response.question;
+  }
+
+  async deleteExamQuestion(courseId: string, questionId: string): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.delete<{ success: boolean }>(
+        `${environment.apiUrl}/teacher/courses/${courseId}/exam/questions/${questionId}`,
+        { headers }
+      )
+    );
+    return response.success;
+  }
 }
+

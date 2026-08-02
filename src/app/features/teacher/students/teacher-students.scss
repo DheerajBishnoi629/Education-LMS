@@ -157,3 +157,118 @@ $border-color: #c7c4d8;
     }
   }
 }
+
+// Tab Bar
+.tabs-header {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+
+  .tab-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #64748b;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &.active {
+      color: $primary;
+      border-bottom-color: $primary;
+    }
+
+    .badge-count {
+      padding: 0.125rem 0.5rem;
+      background: #ef4444;
+      color: #ffffff;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+  }
+}
+
+.empty-state {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #64748b;
+
+  .icon {
+    font-size: 3rem;
+    color: #059669;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.score-fail {
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.status-tag {
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+
+  &.requested {
+    background: #fef08a;
+    color: #854d0e;
+  }
+
+  &.approved {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.btn-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  .approve-btn {
+    padding: 0.375rem 0.75rem;
+    background: #059669;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .reject-btn {
+    padding: 0.375rem 0.75rem;
+    background: #ef4444;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+

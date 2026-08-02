@@ -4,13 +4,34 @@
       <h2 class="page-title">User Management</h2>
       <p class="page-subtitle">Manage user accounts, roles, and platform permissions.</p>
     </div>
+
+    <!-- Tab Bar -->
+    <div class="flex items-center gap-3 mt-4 border-b border-slate-200">
+      <button
+        (click)="setTab('all')"
+        [class.border-indigo-600]="activeTab() === 'all'"
+        [class.text-indigo-600]="activeTab() === 'all'"
+        class="pb-2.5 px-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition flex items-center gap-2">
+        <span>All Users</span>
+        <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold">{{ users().length }}</span>
+      </button>
+
+      <button
+        (click)="setTab('pending')"
+        [class.border-purple-600]="activeTab() === 'pending'"
+        [class.text-purple-600]="activeTab() === 'pending'"
+        class="pb-2.5 px-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition flex items-center gap-2">
+        <span>Pending Teacher Requests</span>
+        <span *ngIf="pendingTeacherRequests.length" class="px-2 py-0.5 rounded-full bg-amber-500 text-white text-xs font-bold">{{ pendingTeacherRequests.length }}</span>
+      </button>
+    </div>
   </div>
 
   <div *ngIf="isLoading()" class="loading-box">
     <div class="spinner"></div>
   </div>
 
-  <div *ngIf="!isLoading() && users().length" class="table-card">
+  <div *ngIf="!isLoading()" class="table-card">
     <table class="users-table">
       <thead>
         <tr>
@@ -18,11 +39,11 @@
           <th>Role</th>
           <th>Created Date</th>
           <th class="text-center">Status</th>
-          <th class="text-center">Action</th>
+          <th class="text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users()">
+        <tr *ngFor="let user of (activeTab() === 'pending' ? pendingTeacherRequests : users())">
           <td class="user-cell">
             <div class="user-info">
               <div class="avatar">
@@ -42,13 +63,44 @@
           </td>
           <td>{{ user.created_at | date:'mediumDate' }}</td>
           <td class="text-center">
-            <span class="status-badge">{{ user.status }}</span>
+            <span
+              class="px-2.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider"
+              [ngClass]="{
+                'bg-emerald-100 text-emerald-800': user.status === 'active' || user.status === 'Active',
+                'bg-amber-100 text-amber-900': user.status === 'pending_approval' || user.status === 'pending',
+                'bg-rose-100 text-rose-800': user.status === 'rejected'
+              }">
+              {{ user.status }}
+            </span>
           </td>
           <td class="text-center">
-            <button class="edit-role-btn">Edit Role</button>
+            <div *ngIf="user.role === 'teacher' && (user.status === 'pending_approval' || user.status === 'pending')" class="flex items-center justify-center gap-2">
+              <button
+                (click)="approveTeacher(user)"
+                [disabled]="isProcessing()"
+                class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-sm">check_circle</span> Approve
+              </button>
+              <button
+                (click)="rejectTeacher(user)"
+                [disabled]="isProcessing()"
+                class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-sm">cancel</span> Reject
+              </button>
+            </div>
+            <span *ngIf="!(user.role === 'teacher' && (user.status === 'pending_approval' || user.status === 'pending'))" class="text-xs text-slate-400 font-medium">
+              Standard User
+            </span>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div *ngIf="activeTab() === 'pending' && !pendingTeacherRequests.length" class="p-8 text-center text-slate-500">
+      <span class="material-symbols-outlined text-4xl text-emerald-500 mb-2">verified_user</span>
+      <p class="font-bold text-slate-700">No Pending Teacher Registration Requests</p>
+      <p class="text-xs text-slate-400">All teacher registration requests have been reviewed and processed.</p>
+    </div>
   </div>
 </div>
+

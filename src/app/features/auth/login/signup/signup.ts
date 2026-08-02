@@ -17,6 +17,8 @@ export class Signup {
   email = '';
   password = '';
 
+  selectedRole: 'student' | 'teacher' = 'student';
+
   isPasswordVisible = false;
   passwordStrength = 0;
   passwordStrengthLabel = 'None';
@@ -28,6 +30,10 @@ export class Signup {
 
   togglePasswordVisibility(): void {
     this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+  setRole(role: 'student' | 'teacher'): void {
+    this.selectedRole = role;
   }
 
   updatePasswordStrength(password: string): void {
@@ -71,8 +77,8 @@ export class Signup {
     this.successMessage = '';
 
     try {
-      const res = await this.authService.signUp(this.fullName, this.email, this.password);
-      this.successMessage = res.message || 'Account created successfully! Please check your Gmail inbox to verify your email address before logging in.';
+      const res = await this.authService.signUp(this.fullName, this.email, this.password, this.selectedRole);
+      this.successMessage = res.message || 'Account created successfully!';
     } catch (err: any) {
       console.error(err);
       if (err?.code === 'auth/email-already-in-use') {
@@ -89,13 +95,85 @@ export class Signup {
     }
   }
 
+  showGooglePasswordModal = false;
+  googleFirebaseUser: any = null;
+  newGooglePassword = '';
+  confirmGooglePassword = '';
+  isSettingPassword = false;
+  googlePasswordError = '';
+  isGooglePasswordVisible = false;
+  isGoogleConfirmPasswordVisible = false;
+
+  toggleGooglePasswordVisibility(): void {
+    this.isGooglePasswordVisible = !this.isGooglePasswordVisible;
+  }
+
+  toggleGoogleConfirmPasswordVisibility(): void {
+    this.isGoogleConfirmPasswordVisible = !this.isGoogleConfirmPasswordVisible;
+  }
+
   async loginWithGoogle(): Promise<void> {
     try {
-      await this.authService.loginWithGoogle();
+      this.errorMessage = '';
+      const res = await this.authService.loginWithGoogle();
+      if (res.requiresPasswordCreation && res.firebaseUser) {
+        this.googleFirebaseUser = res.firebaseUser;
+        this.showGooglePasswordModal = true;
+      }
     } catch (err: any) {
       console.error(err);
       this.errorMessage = err?.message || 'Failed to sign in with Google.';
     }
   }
+
+  async onSubmitGooglePassword(): Promise<void> {
+    if (!this.newGooglePassword || !this.confirmGooglePassword) {
+      this.googlePasswordError = 'Please enter and confirm your password.';
+      return;
+    }
+
+    if (this.newGooglePassword.length < 6) {
+      this.googlePasswordError = 'Password must be at least 6 characters long.';
+      return;
+    }
+
+    if (this.newGooglePassword !== this.confirmGooglePassword) {
+      this.googlePasswordError = 'Passwords do not match.';
+      return;
+    }
+
+    try {
+      this.isSettingPassword = true;
+      this.googlePasswordError = '';
+      await this.authService.setPasswordForGoogleUser(this.googleFirebaseUser, this.newGooglePassword);
+      this.showGooglePasswordModal = false;
+    } catch (err: any) {
+      console.error(err);
+      this.googlePasswordError = err?.message || 'Failed to set password. Please try again.';
+    } finally {
+      this.isSettingPassword = false;
+    }
+  }
+
+  async skipGooglePassword(): Promise<void> {
+    if (!this.googleFirebaseUser) return;
+    try {
+      this.isSettingPassword = true;
+      const token = await this.googleFirebaseUser.getIdToken();
+      const syncRes = await this.authService.syncWithBackend(token, this.googleFirebaseUser.displayName || undefined);
+      if (!syncRes.pendingApproval && !syncRes.isRejected) {
+        this.authService.currentUser.set(syncRes.user);
+        this.showGooglePasswordModal = false;
+        this.authService.isGoogleAuthInProgress = false;
+        this.authService.redirectBasedOnRole(syncRes.user.role);
+      }
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      this.isSettingPassword = false;
+      this.authService.isGoogleAuthInProgress = false;
+    }
+  }
 }
+
 

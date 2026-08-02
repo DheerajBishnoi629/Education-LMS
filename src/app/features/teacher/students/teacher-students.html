@@ -1,14 +1,33 @@
 <div class="teacher-students-container">
   <div class="page-header">
-    <h2 class="page-title">Enrolled Students</h2>
-    <p class="page-subtitle">Track student progress and active course enrollments.</p>
+    <h2 class="page-title">Students & Entrance Approvals</h2>
+    <p class="page-subtitle">Track student progress and manage entrance re-exam permissions.</p>
+
+    <!-- Tab Bar -->
+    <div class="tabs-header">
+      <button
+        (click)="activeTab.set('enrolled')"
+        [class.active]="activeTab() === 'enrolled'"
+        class="tab-btn">
+        Enrolled Students ({{ students().length }})
+      </button>
+
+      <button
+        (click)="activeTab.set('reexam')"
+        [class.active]="activeTab() === 'reexam'"
+        class="tab-btn">
+        Re-Exam Requests ({{ reexamRequests().length }})
+        <span *ngIf="reexamRequests().length" class="badge-count">{{ reexamRequests().length }}</span>
+      </button>
+    </div>
   </div>
 
   <div *ngIf="isLoading()" class="loading-box">
     <div class="spinner"></div>
   </div>
 
-  <div *ngIf="!isLoading() && students().length" class="table-card">
+  <!-- Enrolled Students Tab -->
+  <div *ngIf="!isLoading() && activeTab() === 'enrolled' && students().length" class="table-card">
     <table class="students-table">
       <thead>
         <tr>
@@ -43,4 +62,67 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Re-Exam Permission Requests Tab -->
+  <div *ngIf="!isLoading() && activeTab() === 'reexam'" class="table-card">
+    <div *ngIf="!reexamRequests().length" class="empty-state">
+      <span class="material-symbols-outlined icon">check_circle</span>
+      <p>No pending re-exam requests from students.</p>
+    </div>
+
+    <table *ngIf="reexamRequests().length" class="students-table">
+      <thead>
+        <tr>
+          <th>Student Details</th>
+          <th>Course Title</th>
+          <th>Previous Score</th>
+          <th>Status</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let req of reexamRequests()">
+          <td class="student-cell">
+            <div class="user-info">
+              <div class="avatar">
+                <img *ngIf="req.photo_url" [src]="req.photo_url" [alt]="req.student_name" />
+                <span *ngIf="!req.photo_url">{{ req.student_name ? req.student_name.charAt(0) : 'S' }}</span>
+              </div>
+              <div>
+                <p class="name">{{ req.student_name }}</p>
+                <p class="email">{{ req.student_email }}</p>
+              </div>
+            </div>
+          </td>
+          <td class="course-cell">{{ req.course_title }}</td>
+          <td>
+            <span class="score-fail">{{ req.score }} / {{ req.total_questions }} ({{ req.score_percentage }}%)</span>
+          </td>
+          <td>
+            <span class="status-tag" [class.requested]="req.reexam_status === 'requested'" [class.approved]="req.reexam_status === 'approved'" [class.rejected]="req.reexam_status === 'rejected'">
+              {{ req.reexam_status | uppercase }}
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="btn-group">
+              <button
+                (click)="respondReexam(req.attempt_id, true)"
+                [disabled]="req.reexam_status === 'approved'"
+                class="approve-btn">
+                Approve Re-Exam
+              </button>
+
+              <button
+                (click)="respondReexam(req.attempt_id, false)"
+                [disabled]="req.reexam_status === 'rejected'"
+                class="reject-btn">
+                Reject
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+

@@ -48,6 +48,28 @@ export class AdminService {
     return response.users;
   }
 
+  async approveTeacher(userId: string): Promise<void> {
+    const headers = await this.getAuthHeaders();
+    await firstValueFrom(
+      this.http.post(
+        `${environment.apiUrl}/admin/users/${userId}/approve`,
+        {},
+        { headers }
+      )
+    );
+  }
+
+  async rejectTeacher(userId: string): Promise<void> {
+    const headers = await this.getAuthHeaders();
+    await firstValueFrom(
+      this.http.post(
+        `${environment.apiUrl}/admin/users/${userId}/reject`,
+        {},
+        { headers }
+      )
+    );
+  }
+
   async getSettings(): Promise<AdminSettings> {
     const headers = await this.getAuthHeaders();
     const response = await firstValueFrom(
