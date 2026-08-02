@@ -6,10 +6,13 @@ import { environment } from '../../../environments/environment';
 import {
   StudentDashboardData,
   Course,
+  CourseEntranceExamData,
+  ExamAttempt,
   Enrollment,
   Assignment,
   Quiz,
   Certificate,
+  CertificatesResponse,
 } from '../models/student.model';
 
 @Injectable({
@@ -69,6 +72,44 @@ export class StudentService {
       )
     );
     return response.course;
+  }
+
+  async getCourseEntranceExam(courseId: string): Promise<CourseEntranceExamData> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.get<{ success: boolean; data: CourseEntranceExamData }>(
+        `${environment.apiUrl}/courses/${courseId}/entrance-exam`,
+        { headers }
+      )
+    );
+    return response.data;
+  }
+
+  async submitCourseEntranceExam(
+    courseId: string,
+    answers: { question_id: string; selected_option: string }[]
+  ): Promise<ExamAttempt> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; result: ExamAttempt }>(
+        `${environment.apiUrl}/courses/${courseId}/entrance-exam/submit`,
+        { answers },
+        { headers }
+      )
+    );
+    return response.result;
+  }
+
+  async requestStudentReexam(courseId: string): Promise<boolean> {
+    const headers = await this.getAuthHeaders();
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean }>(
+        `${environment.apiUrl}/courses/${courseId}/entrance-exam/request-reexam`,
+        {},
+        { headers }
+      )
+    );
+    return response.success;
   }
 
   async enrollInCourse(courseId: string): Promise<boolean> {
@@ -144,13 +185,21 @@ export class StudentService {
   }
 
   async getCertificates(): Promise<Certificate[]> {
+    const data = await this.getCertificatesData();
+    return data.issuedCertificates || [];
+  }
+
+  async getCertificatesData(): Promise<CertificatesResponse> {
     const headers = await this.getAuthHeaders();
     const response = await firstValueFrom(
-      this.http.get<{ success: boolean; certificates: Certificate[] }>(
+      this.http.get<{ success: boolean; certificates: CertificatesResponse | Certificate[] }>(
         `${environment.apiUrl}/student/certificates`,
         { headers }
       )
     );
+    if (Array.isArray(response.certificates)) {
+      return { issuedCertificates: response.certificates, courseProgress: [] };
+    }
     return response.certificates;
   }
 
@@ -165,3 +214,4 @@ export class StudentService {
     return response.wishlist;
   }
 }
+

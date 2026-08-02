@@ -15,10 +15,20 @@ export const roleGuard: CanActivateFn = (route, state) => {
     take(1),
     map(() => {
       const user = authService.currentUser();
-      if (user && expectedRoles.includes(user.role)) {
-        return true;
+      if (user) {
+        if (expectedRoles.includes(user.role)) {
+          return true;
+        }
+        // Redirect user to their active role portal
+        if (user.role === 'teacher') {
+          return router.createUrlTree(['/teacher/dashboard']);
+        } else if (user.role === 'admin') {
+          return router.createUrlTree(['/admin/dashboard']);
+        } else if (user.role === 'student') {
+          return router.createUrlTree(['/student/dashboard']);
+        }
       }
-      return router.createUrlTree(['/unauthorized']);
+      return router.createUrlTree(['/login']);
     })
   );
 };

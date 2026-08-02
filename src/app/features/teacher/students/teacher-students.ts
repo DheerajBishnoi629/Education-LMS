@@ -14,21 +14,39 @@ export class TeacherStudents implements OnInit {
   private teacherService = inject(TeacherService);
 
   students = signal<TeacherStudent[]>([]);
+  reexamRequests = signal<any[]>([]);
   isLoading = signal(true);
+  activeTab = signal<'enrolled' | 'reexam'>('enrolled');
 
   ngOnInit(): void {
-    this.fetchStudents();
+    this.fetchData();
   }
 
-  async fetchStudents(): Promise<void> {
+  async fetchData(): Promise<void> {
     try {
       this.isLoading.set(true);
-      const res = await this.teacherService.getStudents();
-      this.students.set(res);
+      const [stRes, rxRes] = await Promise.all([
+        this.teacherService.getStudents(),
+        this.teacherService.getReexamRequests(),
+      ]);
+      this.students.set(stRes);
+      this.reexamRequests.set(rxRes);
       this.isLoading.set(false);
     } catch (err) {
-      console.error('Failed to fetch teacher students:', err);
+      console.error('Failed to fetch teacher student data:', err);
       this.isLoading.set(false);
     }
   }
+
+  async respondReexam(attemptId: string, approve: boolean): Promise<void> {
+    try {
+      const ok = await this.teacherService.respondReexamRequest(attemptId, approve);
+      if (ok) {
+        await this.fetchData();
+      }
+    } catch (err) {
+      console.error('Failed to respond re-exam request:', err);
+    }
+  }
 }
+

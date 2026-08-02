@@ -12,24 +12,73 @@
   <div *ngIf="!isLoading() && course()" class="workspace-grid">
     <!-- Main Left Column: Video Player & Overview -->
     <div class="main-player-col">
-      <!-- 16:9 Video Player Wrapper -->
+      <!-- 16:9 Video Player Wrapper / Entrance Lock -->
       <div class="video-player-card">
-        <div *ngIf="safeVideoUrl()" class="iframe-aspect-ratio">
-          <iframe
-            [src]="safeVideoUrl()"
-            title="Course Video Player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            class="youtube-iframe">
-          </iframe>
+        <!-- Locked Video Overlay if Student Has Not Passed Entrance Exam -->
+        <div *ngIf="!course()?.entranceExam?.passed" class="locked-video-overlay">
+          <div class="locked-content">
+            <span class="material-symbols-outlined lock-big-icon">lock</span>
+            <h2>Entrance Exam Required</h2>
+            <p>
+              To watch video modules or join this course, you must pass the basic entrance exam created by the course instructor.
+            </p>
+            
+            <div class="exam-status-box" *ngIf="course()?.entranceExam?.score !== undefined">
+              <span class="score-chip" [class.fail]="!course()?.entranceExam?.passed">
+                Previous Score: {{ course()?.entranceExam?.score }}/{{ course()?.entranceExam?.totalQuestions }} ({{ course()?.entranceExam?.scorePercentage }}%)
+              </span>
+            </div>
+
+            <div class="exam-action-buttons">
+              <!-- If never attempted or teacher approved re-exam -->
+              <button
+                *ngIf="course()?.entranceExam?.reexamStatus === 'none' || course()?.entranceExam?.reexamStatus === 'approved'"
+                (click)="openEntranceExam()"
+                class="take-exam-btn">
+                <span class="material-symbols-outlined">quiz</span>
+                <span>{{ course()?.entranceExam?.score ? 'Retake Entrance Exam' : 'Start Entrance Exam' }}</span>
+              </button>
+
+              <!-- If failed and reexamStatus is none -->
+              <button
+                *ngIf="course()?.entranceExam?.score && !course()?.entranceExam?.passed && course()?.entranceExam?.reexamStatus === 'none'"
+                (click)="requestReexam()"
+                [disabled]="isRequestingReexam()"
+                class="request-reexam-btn">
+                <span class="material-symbols-outlined">contact_support</span>
+                <span>{{ isRequestingReexam() ? 'Sending Request...' : 'Request Re-Exam Permission from Teacher' }}</span>
+              </button>
+
+              <span *ngIf="course()?.entranceExam?.reexamStatus === 'requested'" class="pending-reexam-chip">
+                <span class="material-symbols-outlined">pending</span> Re-Exam Requested — Waiting for Teacher Approval
+              </span>
+
+              <span *ngIf="course()?.entranceExam?.reexamStatus === 'rejected'" class="rejected-reexam-chip">
+                <span class="material-symbols-outlined">cancel</span> Re-Exam Request Declined by Teacher
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div *ngIf="!safeVideoUrl()" class="no-video-placeholder">
-          <img [src]="course()?.thumbnail_url" [alt]="course()?.title" />
-          <div class="play-overlay">
-            <span class="material-symbols-outlined">play_circle</span>
-            <p>Select a lesson from the playlist to watch</p>
+        <!-- Unlocked Video Iframe Player -->
+        <div *ngIf="course()?.entranceExam?.passed">
+          <div *ngIf="safeVideoUrl()" class="iframe-aspect-ratio">
+            <iframe
+              [src]="safeVideoUrl()"
+              title="Course Video Player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              class="youtube-iframe">
+            </iframe>
+          </div>
+
+          <div *ngIf="!safeVideoUrl()" class="no-video-placeholder">
+            <img [src]="course()?.thumbnail_url" [alt]="course()?.title" />
+            <div class="play-overlay">
+              <span class="material-symbols-outlined">play_circle</span>
+              <p>Select a lesson from the playlist to watch</p>
+            </div>
           </div>
         </div>
       </div>
@@ -130,6 +179,137 @@
         </div>
       </div>
     </div>
+  <!-- Entrance Exam Interactive Dialog Modal -->
+  <div *ngIf="showExamModal()" class="exam-modal-overlay">
+    <div class="exam-modal-card">
+      <div class="exam-modal-header">
+        <div class="header-info">
+          <h2>{{ examData()?.exam?.title || 'Course Entrance Assessment' }}</h2>
+          <p class="sub">Minimum Required Score to Pass: 8 / 10 (80%)</p>
+        </div>
+        <button (click)="closeExamModal()" class="close-modal-btn">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Loading questions -->
+      <div *ngIf="isLoadingExam()" class="modal-loading-box">
+        <div class="spinner"></div>
+        <p>Fetching entrance questions from instructor...</p>
+      </div>
+
+      <!-- Result View -->
+      <div *ngIf="!isLoadingExam() && examResult()" class="exam-result-view">
+        <div class="result-badge-card" [class.passed]="examResult()?.passed" [class.failed]="!examResult()?.passed">
+          <span class="material-symbols-outlined result-icon">
+            {{ examResult()?.passed ? 'workspace_premium' : 'sentiment_dissatisfied' }}
+          </span>
+          <h3>{{ examResult()?.passed ? 'Congratulations! Exam Cleared!' : 'Exam Failed (Score < 8/10)' }}</h3>
+          <p class="score-display">
+            Your Score: <strong>{{ examResult()?.score }} / {{ examResult()?.total_questions }}</strong>
+            ({{ examResult()?.score_percentage }}%)
+          </p>
+          <p *ngIf="examResult()?.passed" class="result-hint success">
+            🎉 You passed the prerequisite exam! The course video playlist and enrollment are now unlocked.
+          </p>
+          <p *ngIf="!examResult()?.passed" class="result-hint fail">
+            ⚠️ You need at least 8/10 to unlock this course. You can request re-exam permission from the instructor to try again.
+          </p>
+
+          <div class="result-actions">
+            <button *ngIf="examResult()?.passed" (click)="closeExamModal()" class="finish-btn">
+              Start Learning Now
+            </button>
+            <button *ngIf="!examResult()?.passed" (click)="requestReexam(); closeExamModal()" class="reexam-btn">
+              Request Teacher Permission for Re-Exam
+            </button>
+            <button *ngIf="!examResult()?.passed" (click)="closeExamModal()" class="cancel-btn">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions Step View -->
+      <div *ngIf="!isLoadingExam() && !examResult() && examData()?.questions?.length" class="exam-questions-body">
+        <div class="progress-bar-container">
+          <div class="step-indicator">
+            Question {{ currentQuestionIndex() + 1 }} of {{ examData()?.questions?.length }}
+          </div>
+          <div class="progress-track">
+            <div
+              class="progress-fill"
+              [style.width.%]="((currentQuestionIndex() + 1) / examData()!.questions.length) * 100">
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="examData()?.questions?.[currentQuestionIndex()] as q" class="active-question-card">
+          <h3 class="question-text">{{ currentQuestionIndex() + 1 }}. {{ q.question_text }}</h3>
+
+          <div class="options-grid">
+            <label
+              (click)="selectExamOption(q.id, 'A')"
+              [class.selected]="studentAnswers()[q.id] === 'A'"
+              class="option-card">
+              <input type="radio" [name]="'q_' + q.id" value="A" [checked]="studentAnswers()[q.id] === 'A'" />
+              <span class="option-key">A</span>
+              <span class="option-label">{{ q.option_a }}</span>
+            </label>
+
+            <label
+              (click)="selectExamOption(q.id, 'B')"
+              [class.selected]="studentAnswers()[q.id] === 'B'"
+              class="option-card">
+              <input type="radio" [name]="'q_' + q.id" value="B" [checked]="studentAnswers()[q.id] === 'B'" />
+              <span class="option-key">B</span>
+              <span class="option-label">{{ q.option_b }}</span>
+            </label>
+
+            <label
+              (click)="selectExamOption(q.id, 'C')"
+              [class.selected]="studentAnswers()[q.id] === 'C'"
+              class="option-card">
+              <input type="radio" [name]="'q_' + q.id" value="C" [checked]="studentAnswers()[q.id] === 'C'" />
+              <span class="option-key">C</span>
+              <span class="option-label">{{ q.option_c }}</span>
+            </label>
+
+            <label
+              (click)="selectExamOption(q.id, 'D')"
+              [class.selected]="studentAnswers()[q.id] === 'D'"
+              class="option-card">
+              <input type="radio" [name]="'q_' + q.id" value="D" [checked]="studentAnswers()[q.id] === 'D'" />
+              <span class="option-key">D</span>
+              <span class="option-label">{{ q.option_d }}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="exam-modal-footer">
+          <button (click)="prevQuestion()" [disabled]="currentQuestionIndex() === 0" class="nav-btn">
+            <span class="material-symbols-outlined">navigate_before</span> Previous
+          </button>
+
+          <button
+            *ngIf="currentQuestionIndex() < examData()!.questions.length - 1"
+            (click)="nextQuestion()"
+            class="nav-btn primary">
+            Next <span class="material-symbols-outlined">navigate_next</span>
+          </button>
+
+          <button
+            *ngIf="currentQuestionIndex() === examData()!.questions.length - 1"
+            (click)="submitExam()"
+            [disabled]="isSubmittingExam()"
+            class="submit-exam-btn">
+            <span *ngIf="!isSubmittingExam()">Submit Exam & Unlock</span>
+            <span *ngIf="isSubmittingExam()">Evaluating Score...</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
 

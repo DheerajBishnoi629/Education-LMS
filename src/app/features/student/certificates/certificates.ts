@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StudentService } from '../../../core/services/student.service';
-import { Certificate } from '../../../core/models/student.model';
+import { Certificate, CourseProgressEligibility } from '../../../core/models/student.model';
 
 @Component({
   selector: 'app-certificates',
@@ -14,6 +14,7 @@ export class Certificates implements OnInit {
   private studentService = inject(StudentService);
 
   certificates = signal<Certificate[]>([]);
+  courseProgress = signal<CourseProgressEligibility[]>([]);
   isLoading = signal(true);
 
   ngOnInit(): void {
@@ -23,8 +24,9 @@ export class Certificates implements OnInit {
   async fetchCertificates(): Promise<void> {
     try {
       this.isLoading.set(true);
-      const res = await this.studentService.getCertificates();
-      this.certificates.set(res);
+      const res = await this.studentService.getCertificatesData();
+      this.certificates.set(res.issuedCertificates || []);
+      this.courseProgress.set(res.courseProgress || []);
       this.isLoading.set(false);
     } catch (err) {
       console.error('Failed to fetch certificates:', err);
@@ -32,3 +34,4 @@ export class Certificates implements OnInit {
     }
   }
 }
+

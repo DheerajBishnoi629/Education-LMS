@@ -1,0 +1,194 @@
+<div class="exam-editor-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Entrance Exam & Questions Editor</h2>
+      <p class="page-subtitle">Configure admission exam rules, passing score, and manage multiple-choice questions & answers for student course entry.</p>
+    </div>
+    <a routerLink="/teacher/courses" class="back-btn">
+      <span class="material-symbols-outlined icon">arrow_back</span>
+      <span>Back to Courses</span>
+    </a>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage()" class="alert-banner alert-success">
+    <span class="material-symbols-outlined icon">check_circle</span>
+    <span>{{ successMessage() }}</span>
+  </div>
+
+  <div *ngIf="errorMessage()" class="alert-banner alert-danger">
+    <span class="material-symbols-outlined icon">error</span>
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading entrance exam details...</p>
+  </div>
+
+  <div *ngIf="!isLoading()" class="editor-grid">
+    <!-- Left Column: Settings & Question Form -->
+    <div class="form-column">
+      <!-- Exam Config Card -->
+      <div class="editor-card">
+        <div class="card-header">
+          <span class="material-symbols-outlined card-icon">tune</span>
+          <h3 class="card-title">Exam Settings</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Exam Title *</label>
+            <input type="text" [(ngModel)]="examTitle" class="form-input" placeholder="e.g. Advanced Angular Architecture Entrance Exam" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Passing Score (Min Correct Answers)</label>
+              <input type="number" [(ngModel)]="passingScore" min="1" [max]="questions().length || 10" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Questions</label>
+              <input type="text" [value]="questions().length + ' Questions'" disabled class="form-input disabled-input" />
+            </div>
+          </div>
+
+          <button (click)="saveExamSettings()" [disabled]="isSavingSettings()" class="btn-primary">
+            <span class="material-symbols-outlined icon">save</span>
+            <span>{{ isSavingSettings() ? 'Saving...' : 'Save Settings' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Add / Edit Question Card -->
+      <div class="editor-card">
+        <div class="card-header">
+          <span class="material-symbols-outlined card-icon">{{ editingQuestionId ? 'edit_note' : 'add_circle' }}</span>
+          <h3 class="card-title">{{ editingQuestionId ? 'Edit Question' : 'Add New Question' }}</h3>
+        </div>
+
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Question Text *</label>
+            <textarea rows="3" [(ngModel)]="questionText" class="form-textarea" placeholder="Enter question statement..."></textarea>
+          </div>
+
+          <div class="options-grid">
+            <!-- Option A -->
+            <div class="option-field" [class.is-correct]="correctOption === 'A'">
+              <label class="option-label">
+                <input type="radio" name="correctOption" value="A" [(ngModel)]="correctOption" />
+                <span class="badge badge-a">Option A</span>
+                <span class="correct-tag" *ngIf="correctOption === 'A'">(Correct Answer)</span>
+              </label>
+              <input type="text" [(ngModel)]="optionA" class="form-input" placeholder="Option A text" />
+            </div>
+
+            <!-- Option B -->
+            <div class="option-field" [class.is-correct]="correctOption === 'B'">
+              <label class="option-label">
+                <input type="radio" name="correctOption" value="B" [(ngModel)]="correctOption" />
+                <span class="badge badge-b">Option B</span>
+                <span class="correct-tag" *ngIf="correctOption === 'B'">(Correct Answer)</span>
+              </label>
+              <input type="text" [(ngModel)]="optionB" class="form-input" placeholder="Option B text" />
+            </div>
+
+            <!-- Option C -->
+            <div class="option-field" [class.is-correct]="correctOption === 'C'">
+              <label class="option-label">
+                <input type="radio" name="correctOption" value="C" [(ngModel)]="correctOption" />
+                <span class="badge badge-c">Option C</span>
+                <span class="correct-tag" *ngIf="correctOption === 'C'">(Correct Answer)</span>
+              </label>
+              <input type="text" [(ngModel)]="optionC" class="form-input" placeholder="Option C text" />
+            </div>
+
+            <!-- Option D -->
+            <div class="option-field" [class.is-correct]="correctOption === 'D'">
+              <label class="option-label">
+                <input type="radio" name="correctOption" value="D" [(ngModel)]="correctOption" />
+                <span class="badge badge-d">Option D</span>
+                <span class="correct-tag" *ngIf="correctOption === 'D'">(Correct Answer)</span>
+              </label>
+              <input type="text" [(ngModel)]="optionD" class="form-input" placeholder="Option D text" />
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button *ngIf="editingQuestionId" (click)="cancelEdit()" type="button" class="btn-secondary">
+              Cancel Edit
+            </button>
+            <button (click)="saveQuestion()" [disabled]="isSavingQuestion()" class="btn-primary">
+              <span class="material-symbols-outlined icon">{{ editingQuestionId ? 'check' : 'add' }}</span>
+              <span>{{ isSavingQuestion() ? 'Saving...' : (editingQuestionId ? 'Update Question' : 'Add Question to Exam') }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Question List -->
+    <div class="questions-column">
+      <div class="editor-card">
+        <div class="card-header justify-between">
+          <div class="flex-items-center">
+            <span class="material-symbols-outlined card-icon">quiz</span>
+            <h3 class="card-title">Exam Questions ({{ questions().length }})</h3>
+          </div>
+          <span class="passing-info-pill">
+            Min {{ passingScore }}/{{ questions().length }} Correct to Pass
+          </span>
+        </div>
+
+        <div class="card-body">
+          <div *ngIf="!questions().length" class="empty-questions">
+            <span class="material-symbols-outlined empty-icon">help_center</span>
+            <p>No questions added yet. Use the form to add questions to this entrance exam.</p>
+          </div>
+
+          <div *ngIf="questions().length" class="question-list">
+            <div *ngFor="let q of questions(); let i = index" class="question-card" [class.editing-card]="editingQuestionId === q.id">
+              <div class="question-header">
+                <span class="question-number">Q{{ i + 1 }}</span>
+                <p class="question-text">{{ q.question_text }}</p>
+                <div class="question-actions">
+                  <button (click)="editQuestion(q)" title="Edit Question" class="icon-btn edit-icon">
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <button (click)="deleteQuestion(q.id!)" title="Delete Question" class="icon-btn delete-icon">
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="question-options">
+                <div class="option-pill" [class.correct]="q.correct_option === 'A'">
+                  <span class="opt-tag">A</span>
+                  <span class="opt-text">{{ q.option_a }}</span>
+                  <span class="check-mark" *ngIf="q.correct_option === 'A'">✓</span>
+                </div>
+                <div class="option-pill" [class.correct]="q.correct_option === 'B'">
+                  <span class="opt-tag">B</span>
+                  <span class="opt-text">{{ q.option_b }}</span>
+                  <span class="check-mark" *ngIf="q.correct_option === 'B'">✓</span>
+                </div>
+                <div class="option-pill" [class.correct]="q.correct_option === 'C'">
+                  <span class="opt-tag">C</span>
+                  <span class="opt-text">{{ q.option_c }}</span>
+                  <span class="check-mark" *ngIf="q.correct_option === 'C'">✓</span>
+                </div>
+                <div class="option-pill" [class.correct]="q.correct_option === 'D'">
+                  <span class="opt-tag">D</span>
+                  <span class="opt-text">{{ q.option_d }}</span>
+                  <span class="check-mark" *ngIf="q.correct_option === 'D'">✓</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

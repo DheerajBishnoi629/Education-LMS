@@ -57,12 +57,10 @@
 
         <!-- Action Footer -->
         <div class="card-footer">
-          <button class="edit-btn">
-            <span class="material-symbols-outlined icon">
-              {{ course.status === 'Published' ? 'edit' : 'build' }}
-            </span>
-            <span>{{ course.status === 'Published' ? 'Edit Course' : 'Continue Building' }}</span>
-          </button>
+          <a [routerLink]="['/teacher/courses', course.id, 'exam']" class="exam-btn">
+            <span class="material-symbols-outlined icon">quiz</span>
+            <span>Manage Exam & Questions</span>
+          </a>
         </div>
       </div>
     </div>
